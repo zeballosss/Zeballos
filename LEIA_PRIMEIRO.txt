@@ -1,0 +1,32 @@
+ZEBALLOS — O ÁLBUM NÃO OFICIAL DO 2º INFONET
+
+Para ver no computador: abra index.html no navegador.
+Para colocar no GitHub e na Vercel: siga COMO_PUBLICAR.md.
+O index.html precisa ficar na raiz do repositório. Envie os arquivos extraídos, não o ZIP.
+
+O site inclui as 203 fotos de galeria.zip e os 12 arquivos de Pessoas.zip.
+As imagens foram otimizadas para WebP, sem excluir fotos. Metadados EXIF foram removidos.
+Cada foto da galeria tem uma miniatura e uma versão maior (até 1600 px).
+
+Claro, escuro e Leonida: botões no topo. Leonida tem palmeiras e pôr do sol.
+Galeria: busca por nome/arquivo, filtros, ampliação, navegação por setas e download.
+As fotos salvas pelo coração e o tema ficam apenas no navegador de quem visita.
+A rádio toca uma melodia original sintetizada. O áudio só começa depois do clique.
+Há também 6 imagens oficiais de GTA VI e 4 capas de Kleberiano e colaboradores,
+com créditos no site e fontes completas em assets/web/sources.json.
+A rádio original não reproduz as músicas das capas. Os lançamentos têm links próprios.
+O cartão de cobrar o aluguel da Mandy é uma brincadeira interativa do site.
+Não há cadastro, rastreamento nem envio de fotos pelo visitante.
+
+Pequenos segredos (spoiler):
+- Digite LEONIDA fora da busca.
+- Digite LAGOSTA para uma visita especial.
+- Clique 5 vezes na logo em sequência.
+- Abra e feche a foto do Henri 3 vezes rapidamente pela mesma foto da página.
+- A tecla P abre/fecha o modo estudo, quando você não está digitando na busca.
+
+Os textos estão em index.html; o visual, em styles.css; os botões, em app.js.
+A lista de fotos e pessoas está em assets/data.js; as imagens ficam em assets.
+Não precisa instalar dependências nem executar build.
+
+Combine com a turma as fotos que podem ficar públicas antes de compartilhar o link.
