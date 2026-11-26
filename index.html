@@ -4,15 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f7f4">
-  <meta name="description" content="O cantinho do Zeballos e do 2º Infonet. Fotos da turma, zero contexto e uma passagem só de ida pra Leonida.">
+  <meta name="description" content="O cantinho do Zeballos e do 2º Infonet. Fotos da turma, memes, jogos do intervalo e uma passagem só de ida pra Leonida.">
   <title>Zeballos — era pra ser um site sério.</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/display.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="memes.css">
+  <link rel="stylesheet" href="arcade.css">
   <script>try{const t=localStorage.getItem('zeballos-theme');if(['light','dark','leonida'].includes(t))document.documentElement.dataset.theme=t}catch(e){}</script>
   <script src="assets/data.js" defer></script>
   <script src="assets/web-data.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="assets/memes-data.js" defer></script>
+  <script src="memes.js" defer></script>
+  <script src="arcade.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -36,7 +41,7 @@
   <header class="site-header">
     <div class="nav-wrap">
       <a class="wordmark" href="#inicio" aria-label="Zeballos, início"><span class="brand-mark">z<span>✳</span></span>zeballos<span class="wordmark-dot">.</span></a>
-      <nav class="main-nav" aria-label="Navegação principal"><a href="#galeria">As fotos</a><a href="#turma">A tropa</a><a href="#gta">GTA & capas</a><a href="#intervalo">O intervalo</a></nav>
+      <nav class="main-nav" aria-label="Navegação principal"><a href="#galeria">As fotos</a><a href="#turma">A tropa</a><a href="#memes">Memes</a><a href="#recreio">Recreio</a><a href="#gta">GTA & capas</a></nav>
       <div class="nav-actions">
         <div class="theme-switch" role="group" aria-label="Tema do site"><button data-theme-set="light" class="icon-button" title="Modo claro" aria-label="Modo claro" aria-pressed="true"><svg><use href="#i-sun"/></svg></button><button data-theme-set="dark" class="icon-button" title="Modo escuro" aria-label="Modo escuro" aria-pressed="false"><svg><use href="#i-moon"/></svg></button></div>
         <button class="leonida-button" data-leonida aria-label="Modo Leonida" aria-pressed="false"><svg><use href="#i-palm"/></svg><span>Modo Leonida</span></button>
@@ -52,6 +57,7 @@
         <p class="hero-description">Mas aí eu lembrei da minha sala.<br>Eu sou o Zeballos. Essas são as fotos, a galera<br class="desktop-break"> e as coisas que só fazem sentido pra gente.</p>
         <div class="hero-actions"><a class="button button-primary" href="#galeria"><svg><use href="#i-photo"/></svg>Abrir a galeria</a><button class="button button-secondary" data-random><svg><use href="#i-dice"/></svg>Me surpreende</button></div>
         <div class="hero-footnote"><div class="avatar-stack" id="avatar-stack"></div><span>Etec de Fernandópolis.<br><b>O resto ficou no grupo.</b></span></div>
+        <a class="hero-new-link" href="#memes">agora tem até o Patrick bobão.</a>
       </div>
       <div class="hero-collage">
         <span class="scribble-note">sim, isso virou um site.</span>
@@ -63,6 +69,8 @@
     </section>
 
     <div class="ticker" aria-hidden="true"><div>FOTOS QUE NÃO PRECISAVAM DE UM SITE <span>✳</span> MAS GANHARAM UM <span>✳</span> 2º INFONET <span>✳</span> FERNANDÓPOLIS NÃO É LEONIDA <span>✳</span> AINDA <span>✳</span></div></div>
+
+    <nav class="quick-nav" aria-label="Explorar as partes do site"><div class="quick-nav-inner container"><a class="quick-brand" href="#inicio">o site da sala.</a><a href="#galeria">As fotos</a><a href="#turma">A tropa</a><a href="#memes">Mural de memes</a><a href="#recreio">Os jogos</a><a href="#gta">GTA & capas</a><a href="#intervalo">Leonida & rádio</a></div></nav>
 
     <section class="gallery-section container section" id="galeria" aria-labelledby="gallery-title">
       <div class="section-heading"><div><p class="eyebrow">O ÁLBUM NÃO OFICIAL</p><h2 id="gallery-title">Foi parar na <span class="serif-word">galeria.</span></h2></div><p>Foto bonita, foto tremida, foto que ninguém explica.<br> Tá tudo aqui. Clica pra ver de perto.</p></div>
@@ -78,6 +86,53 @@
       <div class="crew-grid" id="crew-grid"></div>
       <p class="crew-footnote">✳ Nomes conforme os arquivos que a galera mandou. O casting tá forte.</p>
     </div></section>
+
+    <section class="meme-section container section" id="memes" aria-labelledby="memes-title">
+      <div class="section-heading"><div><p class="eyebrow">DA INTERNET DIRETO PRO GRUPO</p><h2 id="memes-title">O juízo saiu da <span class="serif-word">sala.</span></h2></div><p>Tem imagem que explica melhor que um áudio.<br> Escolhe a sua reação e guarda pro próximo caos.</p></div>
+      <div class="meme-feature-grid">
+        <button class="patrick-feature" id="patrick-feature" aria-label="Abrir o meme do Patrick bobão"><img id="patrick-feature-image" alt="Patrick bobão" loading="lazy"><span class="patrick-feature-copy"><span class="feature-label">PATRICK BOBÃO · PRESENTE</span><strong>O corpo tá na aula.<br> A mente tá aqui.</strong><small>Quando o professor pergunta se todo mundo entendeu.</small></span></button>
+        <button class="rainbow-feature" id="rainbow-feature" aria-label="Abrir a imagem colorida enviada pelo Zeballos"><img id="rainbow-feature-image" alt="A energia do intervalo" loading="lazy"><span class="rainbow-copy"><span class="feature-label">ESSA É A ENERGIA</span><strong>O sinal bateu.<br>O universo mudou.</strong><small>Essa imagem não precisava de uma explicação. Precisava de um lugar no site.</small></span></button>
+      </div>
+      <div class="meme-tools"><div class="meme-filters" role="group" aria-label="Filtrar o mural de memes"><button data-meme-filter="todos" aria-pressed="true">Todos <span id="meme-total">11</span></button><button data-meme-filter="classicos" aria-pressed="false">Clássicos</button><button data-meme-filter="aula" aria-pressed="false">Modo aula</button><button data-meme-filter="caos" aria-pressed="false">O caos</button><button data-meme-filter="salvos" aria-pressed="false">Guardados <span id="memes-saved-count">0</span></button></div><button class="button button-secondary" id="random-meme"><svg aria-hidden="true"><use href="#i-dice"/></svg>Qual é a reação de hoje?</button></div>
+      <p class="memes-status" id="memes-status" role="status" aria-live="polite">Clica numa imagem para ampliar, pegar a legenda ou baixar.</p>
+      <div class="memes-grid" id="memes-grid"></div><p class="empty-state" id="memes-empty" hidden>Ainda não guardou nenhum. O coração resolve isso.</p>
+      <div class="meme-footer"><p>O coração guarda só neste navegador. Memes e personagens pertencem aos respectivos criadores; os créditos e a fonte aparecem ao abrir cada imagem. Legendas da resenha feitas para o site.</p><button class="button button-secondary silly-button" id="silly-toggle" aria-pressed="false">Ativar modo bobão</button></div>
+    </section>
+
+    <section class="arcade-section container section" id="recreio" aria-labelledby="arcade-title">
+      <div class="section-heading"><div><p class="eyebrow">ERA SÓ PRA OLHAR AS FOTOS</p><h2 id="arcade-title">O intervalo <span class="serif-word">rendeu.</span></h2></div><p>Uma cartela, umas cartas e um teste sem valor científico.<br> Pode puxar uma cadeira.</p></div>
+      <div class="arcade-tabs" role="tablist" aria-label="Brincadeiras do intervalo">
+        <button class="arcade-tab" id="arcade-tab-bingo" type="button" role="tab" aria-selected="true" aria-controls="arcade-panel-bingo" tabindex="0"><span aria-hidden="true">✳</span> Bingo da sala</button>
+        <button class="arcade-tab" id="arcade-tab-memory" type="button" role="tab" aria-selected="false" aria-controls="arcade-panel-memory" tabindex="-1"><span aria-hidden="true">▦</span> Jogo da memória</button>
+        <button class="arcade-tab" id="arcade-tab-quiz" type="button" role="tab" aria-selected="false" aria-controls="arcade-panel-quiz" tabindex="-1"><span aria-hidden="true">?</span> Qual meme é você?</button>
+      </div>
+
+      <div class="arcade-panel" id="arcade-panel-bingo" role="tabpanel" aria-labelledby="arcade-tab-bingo">
+        <div class="arcade-game-heading"><div><span class="arcade-stamp">PRESENTE, PROFESSOR.</span><h3>Isso já aconteceu hoje?</h3><p>Marque as cenas do dia. Fechou quatro na linha, na coluna ou na diagonal? Bingo.</p></div><span class="arcade-doodle" aria-hidden="true">✳</span></div>
+        <p class="bingo-scroll-hint">No celular, deslize a cartela para os lados.</p><div class="bingo-scroll" tabindex="0" role="region" aria-label="Cartela de bingo; deslize para ver todas as colunas"><div class="bingo-board" id="bingo-board" role="group" aria-label="Cartela de bingo com 16 situações"></div></div>
+        <div class="arcade-game-footer"><p class="arcade-status" id="bingo-status" role="status" aria-live="polite"></p><div class="arcade-actions"><button class="arcade-button" id="bingo-clear" type="button">Limpar marcações</button><button class="arcade-button arcade-button-filled" id="bingo-new" type="button">Trocar cartela <span aria-hidden="true">↻</span></button></div></div>
+      </div>
+
+      <div class="arcade-panel" id="arcade-panel-memory" role="tabpanel" aria-labelledby="arcade-tab-memory" hidden>
+        <div class="arcade-game-heading"><div><span class="arcade-stamp">A GENTE JUROU QUE LEMBRAVA.</span><h3>Cadê a outra lagosta?</h3><p>Encontre os oito pares. Duas cartas por vez, sem pressa.</p></div><span class="arcade-doodle" aria-hidden="true">🦞</span></div>
+        <div class="memory-score"><span>Jogadas: <b id="memory-moves">0</b></span><span>Pares: <b id="memory-pairs">0 / 8</b></span><span>Recorde neste navegador: <b id="memory-best">—</b></span></div>
+        <div class="memory-board" id="memory-board" role="group" aria-label="Jogo da memória com 16 cartas"></div>
+        <div class="arcade-game-footer"><p class="arcade-status" id="memory-status" role="status" aria-live="polite">Escolha uma carta pra começar.</p><div class="arcade-actions"><button class="arcade-button arcade-button-filled" id="memory-reset" type="button">Recomeçar <span aria-hidden="true">↻</span></button></div></div>
+      </div>
+
+      <div class="arcade-panel" id="arcade-panel-quiz" role="tabpanel" aria-labelledby="arcade-tab-quiz" hidden>
+        <div class="arcade-game-heading"><div><span class="arcade-stamp">O ALGORITMO É A RESENHA.</span><h3>Qual meme é você?</h3><p>Cinco perguntas. Quatro destinos possíveis. Nenhuma conclusão séria.</p></div><span class="arcade-doodle" aria-hidden="true">?</span></div>
+        <div class="quiz-play" id="quiz-play">
+          <div class="quiz-progress-label"><span id="quiz-step">Pergunta 1 de 5</span><span>Vale a primeira ideia.</span></div>
+          <progress class="quiz-progress" id="quiz-progress" value="0" max="5" aria-label="Perguntas respondidas"></progress>
+          <fieldset class="quiz-fieldset" id="quiz-fieldset"><legend id="quiz-question" tabindex="-1"></legend><div class="quiz-answers" id="quiz-answers"></div></fieldset>
+          <div class="quiz-navigation"><button class="arcade-button" id="quiz-back" type="button" disabled>Voltar</button><button class="arcade-button arcade-button-filled" id="quiz-next" type="button" disabled>Próxima pergunta</button></div>
+        </div>
+        <div class="quiz-result" id="quiz-result" hidden><div class="quiz-result-icon" id="quiz-result-icon" aria-hidden="true"></div><p class="arcade-stamp">SEU MEME DO INTERVALO</p><h4 id="quiz-result-title" tabindex="-1"></h4><p id="quiz-result-description"></p><p class="quiz-result-note">Só uma brincadeira, sem teste de personalidade.</p><div class="arcade-actions"><button class="arcade-button" id="quiz-review" type="button">Rever respostas</button><button class="arcade-button arcade-button-filled" id="quiz-restart" type="button">Fazer de novo <span aria-hidden="true">↻</span></button></div></div>
+      </div>
+      <p class="arcade-local-note">✳ A cartela e o recorde ficam só neste navegador. Não tem ranking da sala.</p>
+      <noscript><p>Ative o JavaScript para brincar por aqui.</p></noscript>
+    </section>
 
     <section class="web-section container section" id="gta" aria-labelledby="gta-title">
       <div class="section-heading"><div><p class="eyebrow">O OUTRO ASSUNTO DA SALA</p><h2 id="gta-title">Minha cabeça ficou em <span class="serif-word">Leonida.</span></h2></div><p>Já que não dá pra levar a sala toda,<br> trouxe um pouco de GTA 6 pra cá.</p></div>
@@ -96,6 +151,7 @@
       </div>
       <div class="radio-strip"><div class="radio-label"><span class="record-icon" aria-hidden="true">◎</span><div><b>RÁDIO INTERVALO</b><span id="radio-status">um synth pra acompanhar o scroll</span></div></div><div class="radio-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="button button-secondary radio-play" id="radio-toggle" aria-pressed="false"><svg><use href="#i-play"/></svg><span>Ligar o som</span></button></div>
     </section>
+    <aside class="end-note container"><div><strong>Chegou até aqui? Já é da resenha.</strong><p>As fotos ficam. Os memes mudam. O intervalo sempre acaba rápido demais.</p></div><button class="button button-secondary" id="back-to-top">Voltar pro começo</button></aside>
   </main>
 
   <footer class="site-footer container"><div><a class="wordmark" href="#inicio">zeballos<span class="wordmark-dot">.</span></a><p>Feito pra gente lembrar dessas coisas depois.</p></div><div class="footer-aside"><span>2º Infonet · Etec de Fernandópolis</span><span>Site pessoal e não oficial. Sem vínculo com a Etec ou a Rockstar.</span><button class="secret-hint" id="secret-hint">psiu… tem coisa escondida por aqui.</button></div></footer>
@@ -106,6 +162,8 @@
   &lt;head&gt;&lt;title&gt;Minha página&lt;/title&gt;&lt;/head&gt;
   &lt;body&gt;&lt;h1&gt;Olá, mundo!&lt;/h1&gt;&lt;/body&gt;
 &lt;/html&gt;</code></pre><h3>Para lembrar</h3><ul><li>Use títulos em uma ordem que faça sentido.</li><li>Descreva imagens com o atributo <code>alt</code>.</li><li>O visual precisa funcionar no celular também.</li></ul><p class="study-postscript">Viu? Era pesquisa mesmo.</p></div></dialog>
+  <dialog class="meme-dialog" id="meme-dialog" aria-labelledby="meme-modal-title"><div class="meme-dialog-top"><span id="meme-counter"></span><button class="icon-button" id="meme-close" aria-label="Fechar meme"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div><div class="meme-dialog-body"><div class="meme-modal-picture"><button class="meme-modal-nav" id="meme-previous" aria-label="Meme anterior"><svg aria-hidden="true"><use href="#i-chevron"/></svg></button><img id="meme-image" alt=""><button class="meme-modal-nav" id="meme-next" aria-label="Próximo meme"><svg aria-hidden="true"><use href="#i-chevron"/></svg></button></div><div class="meme-modal-copy"><p class="eyebrow">MATERIAL PARA O GRUPO</p><h3 id="meme-modal-title"></h3><p class="meme-caption" id="meme-caption"></p><div class="meme-dialog-actions"><button class="button button-primary" id="copy-caption">Copiar legenda</button><button class="button button-secondary" id="meme-save" aria-pressed="false">Guardar meme</button></div><div class="meme-source-block"><p id="meme-modal-credit"></p><a id="meme-source" target="_blank" rel="noopener noreferrer">Ver fonte original</a><a id="meme-download" download>Baixar imagem</a></div></div></div><p class="meme-dialog-help">Setas para trocar · Esc para fechar · só falta mandar no grupo.</p></dialog>
+  <aside class="silly-banner" id="silly-banner" hidden><span>🌈 o juízo foi dar uma volta.</span><button id="silly-close" aria-label="Desligar modo bobão">✕</button></aside>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
 </body>
