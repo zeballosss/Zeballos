@@ -45,7 +45,7 @@
     return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   }
   function titleFor(photo) {
-    return photo.name || `Arquivo ${photo.id.replace('foto-', '')} · 2º Infonet`;
+    return photo.name || `Arquivo ${photo.id.replace('foto-', '')} · Etec de Fernandópolis`;
   }
 
   function applyTheme(theme, announce = false) {
