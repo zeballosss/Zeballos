@@ -29,7 +29,6 @@
   let brandClicks = 0;
   let brandReset;
   let previousTheme = 'light';
-  let hintIndex = 0;
   const lightbox = $('#lightbox');
   const study = $('#study-dialog');
 
@@ -295,8 +294,6 @@
       setTimeout(() => wanted.remove(), 4800);
     }
   }));
-  const hints = ['Tenta escrever LEONIDA, sem clicar em nada.', 'A logo não gosta que cliquem nela 5 vezes.', 'Henri em dose tripla: abre, fecha, abre…', 'A tecla P leva os estudos muito a sério.'];
-  $('#secret-hint').addEventListener('click', () => { notify(hints[hintIndex % hints.length]); hintIndex += 1; });
   let typed = '';
   document.addEventListener('keydown', event => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable;
