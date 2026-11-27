@@ -13,8 +13,7 @@
   const highlights = ['foto-012', 'foto-006', 'foto-020', 'foto-003', 'foto-035', 'foto-046', 'foto-025', 'foto-028', 'foto-021', 'foto-017', 'foto-027', 'foto-008'];
   const orderedPhotos = [...highlights.map(id => data.photos.find(photo => photo.id === id)).filter(Boolean), ...data.photos.filter(photo => !highlights.includes(photo.id))];
   const allPhotos = [...orderedPhotos, ...people];
-  const webPhotos = window.WEB_GALLERY || [];
-  const byId = new Map([...allPhotos, ...webPhotos].map(photo => [photo.id, photo]));
+  const byId = new Map(allPhotos.map(photo => [photo.id, photo]));
   const savedIds = storage.read('zeballos-favorites', []);
   const favorites = new Set(Array.isArray(savedIds) ? savedIds.filter(id => byId.has(id)) : []);
   let activeFilter = 'all';
@@ -261,45 +260,6 @@
   });
   $('#crew-grid').append(crewFragment);
   people.slice(0, 5).forEach(person => { const image = document.createElement('img'); image.src = person.src; image.alt = ''; image.width = 33; image.height = 33; $('#avatar-stack').append(image); });
-
-  webPhotos.forEach(photo => {
-    const card = document.createElement('article');
-    card.className = photo.category === 'gta' ? 'web-photo-card' : 'album-card';
-    const open = document.createElement('button');
-    open.className = 'web-photo-open';
-    open.setAttribute('aria-label', `Ampliar ${photo.name}`);
-    const image = document.createElement('img');
-    image.src = photo.src;
-    image.alt = photo.alt;
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    open.append(image);
-    open.addEventListener('click', () => openPhoto(photo.id, webPhotos.filter(item => item.category === photo.category)));
-    const caption = document.createElement('div');
-    caption.className = 'web-photo-caption';
-    const title = document.createElement('h4');
-    title.textContent = photo.name;
-    const credit = document.createElement('span');
-    credit.textContent = photo.artists || 'Rockstar Games';
-    caption.append(title, credit);
-    if (photo.category === 'cover') {
-      const source = document.createElement('a');
-      source.href = photo.sourceUrl;
-      source.target = '_blank';
-      source.rel = 'noopener noreferrer';
-      source.textContent = 'Ver o lançamento';
-      source.className = 'album-source';
-      caption.append(source);
-    }
-    card.append(open, caption);
-    $(photo.category === 'gta' ? '#gta-gallery' : '#cover-grid').append(card);
-  });
-  let rentAttempts = 0;
-  const rentMessages = ['Objetivo atualizado: esperar o Pix cair.', 'O Pix não caiu. A esperança também não.', 'Plano B: mandar “e aí, tudo certo?” de novo.', 'Missão alternativa: cobrar a parte do trabalho do grupo.'];
-  $('#rent-button').addEventListener('click', () => {
-    $('#rent-status').textContent = rentMessages[rentAttempts % rentMessages.length];
-    rentAttempts += 1;
-  });
 
   function toggleStudy() {
     if (study.open) { study.close(); return; }

@@ -38,7 +38,7 @@ No repositório vazio, clique em **uploading an existing file**. Depois, use **A
 
 - Textos da página: `index.html`.
 - Nomes e lista de fotos: `assets/data.js`.
-- Imagens de GTA e capas: `assets/web-data.js`. As fontes estão em `assets/web/sources.json`.
+- Jogos do intervalo: `arcade.js` e `arcade.css`.
 - Visual e cores: `styles.css`.
 - Botões e brincadeiras: `app.js`.
 - Ao trocar uma imagem, mantenha seu caminho ou atualize a entrada correspondente em `assets/data.js`.

@@ -4,21 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f7f4">
-  <meta name="description" content="Fotos, memes e amigos da Etec de Fernandópolis. Um site do Zeballos para a galera de qualquer turma.">
+  <meta name="description" content="Fotos, amigos e jogos da Etec de Fernandópolis. Um site do Zeballos para a galera de qualquer turma.">
   <title>Zeballos — galera da Etec</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/display.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="memes.css">
   <link rel="stylesheet" href="arcade.css">
   <link rel="stylesheet" href="inside-jokes.css">
   <link rel="stylesheet" href="easter-eggs.css">
   <script>try{const t=localStorage.getItem('zeballos-theme');if(['light','dark','leonida'].includes(t))document.documentElement.dataset.theme=t}catch(e){}</script>
   <script src="assets/data.js" defer></script>
-  <script src="assets/web-data.js" defer></script>
   <script src="app.js" defer></script>
-  <script src="assets/memes-data.js" defer></script>
-  <script src="memes.js" defer></script>
   <script src="arcade.js" defer></script>
   <script src="inside-jokes.js" defer></script>
 </head>
@@ -44,7 +40,7 @@
   <header class="site-header">
     <div class="nav-wrap">
       <a class="wordmark" href="#inicio" aria-label="Zeballos, início"><span class="brand-mark">z<span>✳</span></span>zeballos<span class="wordmark-dot">.</span></a>
-      <nav class="main-nav" aria-label="Navegação principal"><a href="#galeria">As fotos</a><a href="#turma">A galera</a><a href="#memes">Memes</a><a href="#recreio">Recreio</a><a href="#gta">GTA & capas</a></nav>
+      <nav class="main-nav" aria-label="Navegação principal"><a href="#galeria">As fotos</a><a href="#turma">A galera</a><a href="#recreio">Recreio</a><a href="#intervalo">Leonida</a></nav>
       <div class="nav-actions">
         <div class="theme-switch" role="group" aria-label="Tema do site"><button data-theme-set="light" class="icon-button" title="Modo claro" aria-label="Modo claro" aria-pressed="true"><svg><use href="#i-sun"/></svg></button><button data-theme-set="dark" class="icon-button" title="Modo escuro" aria-label="Modo escuro" aria-pressed="false"><svg><use href="#i-moon"/></svg></button></div>
         <button class="leonida-button" data-leonida aria-label="Modo Leonida" aria-pressed="false"><svg><use href="#i-palm"/></svg><span>Modo Leonida</span></button>
@@ -57,7 +53,7 @@
       <div class="hero-copy">
         <p class="eyebrow"><button type="button" class="inside-note " data-inside-joke="MMO" data-joke-symbol="✳" data-joke-tone="lime" aria-label="Ler anotação do cabeçalho" title="Ler anotação">✳</button> ZEBALLOS & A GALERA DA ETEC</p>
         <h1 id="hero-title">O álbum<br>da <span class="serif-word">galera.</span></h1>
-        <p class="hero-description">Fotos, memes e amigos da Etec de Fernandópolis.<br>Pode chegar, de qualquer turma.</p>
+        <p class="hero-description">Fotos, jogos e amigos da Etec de Fernandópolis.<br>Pode chegar, de qualquer turma.</p>
         <div class="hero-actions"><a class="button button-primary" href="#galeria"><svg><use href="#i-photo"/></svg>Abrir a galeria</a><button class="button button-secondary" data-random><svg><use href="#i-dice"/></svg>Me surpreende</button></div>
         <div class="hero-footnote"><div class="avatar-stack" id="avatar-stack"></div><span>Etec de Fernandópolis<br><b>e quem cola com a gente.</b></span></div>
       </div>
@@ -70,9 +66,9 @@
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true"><div>ETEC DE FERNANDÓPOLIS <span>✳</span> FOTOS <span>✳</span> AMIGOS <span>✳</span> MEMES <span>✳</span> QUALQUER TURMA <span>✳</span></div></div>
+    <div class="ticker" aria-hidden="true"><div>ETEC DE FERNANDÓPOLIS <span>✳</span> FOTOS <span>✳</span> AMIGOS <span>✳</span> JOGOS <span>✳</span> QUALQUER TURMA <span>✳</span></div></div>
 
-    <nav class="quick-nav" aria-label="Explorar as partes do site"><div class="quick-nav-inner container"><a class="quick-brand" href="#inicio">galera da Etec.</a><a href="#galeria">As fotos</a><a href="#turma">A galera</a><a href="#memes">Mural de memes</a><a href="#recreio">Os jogos</a><a href="#gta">GTA & capas</a><a href="#intervalo">Leonida & rádio</a></div></nav>
+    <nav class="quick-nav" aria-label="Explorar as partes do site"><div class="quick-nav-inner container"><a class="quick-brand" href="#inicio">galera da Etec.</a><a href="#galeria">As fotos</a><a href="#turma">A galera</a><a href="#recreio">Os jogos</a><a href="#intervalo">Leonida & rádio</a></div></nav>
 
     <section class="gallery-section container section" id="galeria" aria-labelledby="gallery-title">
       <div class="section-heading"><div><p class="eyebrow">O ÁLBUM NÃO OFICIAL</p><h2 id="gallery-title">A <span class="serif-word">galeria.</span><button type="button" class="inside-note " data-inside-joke="Valentina" data-joke-symbol="✧" data-joke-tone="pink" aria-label="Ler anotação do álbum" title="Ler anotação">✧</button></h2></div><p>Fotos de diferentes turmas e dos amigos.<br>Clica para ampliar.</p></div>
@@ -90,24 +86,12 @@
       <p class="crew-footnote">Nomes e apelidos dos arquivos enviados. <button type="button" class="inside-note " data-inside-joke="Capivara" data-joke-symbol="≈" data-joke-tone="paper" aria-label="Ler anotação do rodapé da turma" title="Ler anotação">≈</button></p>
     </div></section>
 
-    <section class="meme-section container section" id="memes" aria-labelledby="memes-title">
-      <div class="section-heading"><div><p class="eyebrow">DA INTERNET DIRETO PRO GRUPO <button type="button" class="inside-note " data-inside-joke="Incidentes Julia" data-joke-symbol="△" data-joke-tone="pink" aria-label="Ler anotação do mural" title="Ler anotação">△</button></p><h2 id="memes-title">Mural de <span class="serif-word">memes.</span></h2></div><p>Clássicos da internet e imagens do grupo.</p></div>
-      <div class="meme-feature-grid">
-        <button class="patrick-feature" id="patrick-feature" aria-label="Abrir o meme do Patrick bobão"><img id="patrick-feature-image" alt="Patrick bobão" loading="lazy"><span class="patrick-feature-copy"><span class="feature-label">PATRICK</span><strong>Entendi nada.</strong></span></button>
-        <button class="rainbow-feature" id="rainbow-feature" aria-label="Abrir a imagem colorida enviada pelo Zeballos"><img id="rainbow-feature-image" alt="A energia do intervalo" loading="lazy"><span class="rainbow-copy"><span class="feature-label">DO GRUPO</span><strong>Intervalo.</strong></span></button>
-      </div>
-      <div class="meme-tools"><div class="meme-filters" role="group" aria-label="Filtrar o mural de memes"><button data-meme-filter="todos" aria-pressed="true">Todos <span id="meme-total">11</span></button><button data-meme-filter="classicos" aria-pressed="false">Clássicos</button><button data-meme-filter="aula" aria-pressed="false">Modo aula</button><button data-meme-filter="caos" aria-pressed="false">O caos</button><button data-meme-filter="salvos" aria-pressed="false">Guardados <span id="memes-saved-count">0</span></button></div><button class="button button-secondary" id="random-meme"><svg aria-hidden="true"><use href="#i-dice"/></svg>Meme aleatório</button></div>
-      <p class="memes-status" id="memes-status" role="status" aria-live="polite">Clica numa imagem para ampliar, pegar a legenda ou baixar. </p><div class="inside-edge"><button type="button" class="inside-note " data-inside-joke="69" data-joke-symbol="⋆" data-joke-tone="blue" aria-label="Ler anotação no intervalo das legendas" title="Ler anotação">⋆</button></div>
-      <div class="memes-grid" id="memes-grid"></div><p class="empty-state" id="memes-empty" hidden>Ainda não guardou nenhum. O coração resolve isso.</p>
-      <div class="meme-footer"><p>O coração guarda só neste navegador. Memes e personagens pertencem aos respectivos criadores; os créditos e a fonte aparecem ao abrir cada imagem. <button type="button" class="inside-note " data-inside-joke="Joaquim e lorena" data-joke-symbol="⌘" data-joke-tone="pink" aria-label="Ler anotação na margem das legendas" title="Ler anotação">⌘</button></p></div>
-    </section>
-
     <section class="arcade-section container section" id="recreio" aria-labelledby="arcade-title">
       <div class="section-heading"><div><p class="eyebrow">NO INTERVALO</p><h2 id="arcade-title">Uns <span class="serif-word">jogos.</span><button type="button" class="inside-note " data-inside-joke="O cara que c tá ficando?" data-joke-symbol="?" data-joke-tone="paper" aria-label="Ler anotação do intervalo" title="Ler anotação">?</button></h2></div><p>Bingo, memória e um quiz rápido.</p></div>
       <div class="arcade-tabs" role="tablist" aria-label="Brincadeiras do intervalo">
         <button class="arcade-tab" id="arcade-tab-bingo" type="button" role="tab" aria-selected="true" aria-controls="arcade-panel-bingo" tabindex="0"><span aria-hidden="true">✳</span> Bingo da sala</button>
         <button class="arcade-tab" id="arcade-tab-memory" type="button" role="tab" aria-selected="false" aria-controls="arcade-panel-memory" tabindex="-1"><span aria-hidden="true">▦</span> Jogo da memória</button>
-        <button class="arcade-tab" id="arcade-tab-quiz" type="button" role="tab" aria-selected="false" aria-controls="arcade-panel-quiz" tabindex="-1"><span aria-hidden="true">?</span> Qual meme é você?</button>
+        <button class="arcade-tab" id="arcade-tab-quiz" type="button" role="tab" aria-selected="false" aria-controls="arcade-panel-quiz" tabindex="-1"><span aria-hidden="true">?</span> Qual sua vibe no intervalo?</button>
       </div>
 
       <div class="arcade-panel" id="arcade-panel-bingo" role="tabpanel" aria-labelledby="arcade-tab-bingo">
@@ -124,40 +108,31 @@
       </div>
 
       <div class="arcade-panel" id="arcade-panel-quiz" role="tabpanel" aria-labelledby="arcade-tab-quiz" hidden>
-        <div class="arcade-game-heading"><div><span class="arcade-stamp">QUIZ</span><h3>Qual meme é você?</h3><p>Cinco perguntas, quatro resultados.</p></div><span class="arcade-doodle" aria-hidden="true">?</span></div>
+        <div class="arcade-game-heading"><div><span class="arcade-stamp">QUIZ</span><h3>Qual sua vibe no intervalo?</h3><p>Cinco perguntas, quatro resultados.</p></div><span class="arcade-doodle" aria-hidden="true">?</span></div>
         <div class="quiz-play" id="quiz-play">
           <div class="quiz-progress-label"><span id="quiz-step">Pergunta 1 de 5</span><span>Vale a primeira ideia.</span></div>
           <progress class="quiz-progress" id="quiz-progress" value="0" max="5" aria-label="Perguntas respondidas"></progress>
           <fieldset class="quiz-fieldset" id="quiz-fieldset"><legend id="quiz-question" tabindex="-1"></legend><div class="quiz-answers" id="quiz-answers"></div></fieldset>
           <div class="quiz-navigation"><button class="arcade-button" id="quiz-back" type="button" disabled>Voltar</button><button class="arcade-button arcade-button-filled" id="quiz-next" type="button" disabled>Próxima pergunta</button></div>
         </div>
-        <div class="quiz-result" id="quiz-result" hidden><div class="quiz-result-icon" id="quiz-result-icon" aria-hidden="true"></div><p class="arcade-stamp">SEU MEME DO INTERVALO</p><h4 id="quiz-result-title" tabindex="-1"></h4><p id="quiz-result-description"></p><p class="quiz-result-note">Só uma brincadeira, sem teste de personalidade.</p><div class="arcade-actions"><button class="arcade-button" id="quiz-review" type="button">Rever respostas</button><button class="arcade-button arcade-button-filled" id="quiz-restart" type="button">Fazer de novo <span aria-hidden="true">↻</span></button></div></div>
+        <div class="quiz-result" id="quiz-result" hidden><div class="quiz-result-icon" id="quiz-result-icon" aria-hidden="true"></div><p class="arcade-stamp">SUA VIBE NO INTERVALO</p><h4 id="quiz-result-title" tabindex="-1"></h4><p id="quiz-result-description"></p><p class="quiz-result-note">Só uma brincadeira, sem teste de personalidade.</p><div class="arcade-actions"><button class="arcade-button" id="quiz-review" type="button">Rever respostas</button><button class="arcade-button arcade-button-filled" id="quiz-restart" type="button">Fazer de novo <span aria-hidden="true">↻</span></button></div></div>
       </div>
       <p class="arcade-local-note">✳ A cartela e o recorde ficam só neste navegador. Não tem ranking da sala.</p>
       <noscript><p>Ative o JavaScript para brincar por aqui.</p></noscript>
     </section>
 
-    <section class="web-section container section" id="gta" aria-labelledby="gta-title">
-      <div class="section-heading"><div><p class="eyebrow">GTA & MÚSICA</p><h2 id="gta-title">Direto de <span class="serif-word">Leonida.</span><button type="button" class="inside-note " data-inside-joke="Iceberg do 2infonet" data-joke-symbol="❄" data-joke-tone="blue" aria-label="Ler anotação do mapa" title="Ler anotação">❄</button></h2></div><p>GTA 6, palmeiras e umas capas do Kleberiano.</p></div>
-      <div class="rent-mission"><div class="mission-icon" aria-hidden="true">$</div><div class="mission-copy"><span>MISSÃO SECUNDÁRIA</span><h3>Cobrar o aluguel da Mandy.</h3><p id="rent-status" aria-live="polite">O aluguel continua atrasado.</p></div><button class="button rent-button" id="rent-button">Tentar cobrar</button></div>
-      <div class="gta-gallery" id="gta-gallery"></div>
-      <p class="media-credit">Imagens oficiais de Grand Theft Auto VI: <a href="https://www.rockstargames.com/VI/media/artwork-wallpapers" target="_blank" rel="noopener noreferrer">Rockstar Games</a>. Clica nas imagens para ampliar e ver a fonte.</p>
-      <div class="record-shelf" aria-labelledby="covers-title"><div class="shelf-heading"><div><p class="eyebrow">KLEBERIANO</p><h3 id="covers-title">As <span class="serif-word">capas.</span><button type="button" class="inside-note " data-inside-joke="Selma" data-joke-symbol="♪" data-joke-tone="pink" aria-label="Ler anotação entre os discos" title="Ler anotação">♪</button></h3></div><p>Capas e links dos lançamentos.</p></div><div class="cover-grid" id="cover-grid"></div><p class="media-credit">Créditos das músicas e capas: <a href="https://www.youtube.com/@canalkleberiano" target="_blank" rel="noopener noreferrer">Kleberiano</a>, colaboradores indicados e respectivos titulares. Capas consultadas no <a href="https://music.amazon.com.br/artists/B09NRV6BPT/kleberiano" target="_blank" rel="noopener noreferrer">Amazon Music</a>. Cada disco tem o link do lançamento original.</p></div>
-    </section>
-
     <section class="interval-section container section" id="intervalo" aria-labelledby="interval-title">
-      <div class="section-heading"><div><p class="eyebrow">JÁ QUE VOCÊ TÁ AQUI</p><h2 id="interval-title">Só mais um <span class="serif-word">intervalo.</span></h2></div><p>Troca o tema ou coloca um som.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">JÁ QUE VOCÊ TÁ AQUI</p><h2 id="interval-title">Só mais um <span class="serif-word">intervalo.</span><button type="button" class="inside-note" data-inside-joke="Iceberg do 2infonet" data-joke-symbol="❄" data-joke-tone="blue" aria-label="Ler anotação do intervalo" title="Ler anotação">❄</button></h2></div><p>Troca o tema ou coloca um som.</p></div>
       <div class="interval-grid">
         <article class="leonida-card"><div class="card-sunset" aria-hidden="true"><div></div><img src="assets/palm.svg" class="card-palm-one" alt=""><img src="assets/palm.svg" class="card-palm-two" alt=""></div><div class="leonida-card-copy"><span class="mini-tag">FERNANDÓPOLIS ↔ LEONIDA</span><h3>Fernandópolis<br>em modo<br><i>Vice City.</i></h3><p>Palmeiras, neon e fim de tarde.</p><button class="button button-pink" data-leonida aria-pressed="false"><svg><use href="#i-palm"/></svg><span data-leonida-label>Partiu Leonida</span></button></div></article>
-        <div class="side-quests"><article class="video-note"><span class="note-pin" aria-hidden="true"></span><p class="eyebrow">MISSÃO SECUNDÁRIA</p><h3>“Vou ver só um vídeo<br>do Kleberiano.”</h3><p>Uma frase dita com muita confiança<br>e pouquíssima responsabilidade.</p><a href="https://www.youtube.com/results?search_query=Kleberiano" target="_blank" rel="noopener noreferrer" class="text-link">Tá, só um vídeo <svg><use href="#i-play"/></svg></a></article>
-        <article class="emergency-note"><div><p class="eyebrow">ALGUÉM CHEGOU?</p><h3>Era pesquisa, professor.</h3><p>Pra quando o professor passar.</p></div><button class="emergency-button" id="study-button" title="Atalho: tecla P">Modo estudo <kbd>P</kbd></button></article></div>
+        <div class="side-quests">        <article class="emergency-note"><div><p class="eyebrow">ALGUÉM CHEGOU?</p><h3>Era pesquisa, professor.</h3><p>Pra quando o professor passar.</p></div><button class="emergency-button" id="study-button" title="Atalho: tecla P">Modo estudo <kbd>P</kbd></button></article></div>
       </div>
       <div class="radio-strip"><div class="radio-label"><button type="button" class="inside-note " data-inside-joke="Cuidado com a julia rage" data-joke-symbol="◎" data-joke-tone="pink" aria-label="Ler anotação da rádio" title="Ler anotação">◎</button><div><b>RÁDIO INTERVALO</b><span id="radio-status">um synth pra acompanhar o scroll</span></div></div><div class="radio-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="button button-secondary radio-play" id="radio-toggle" aria-pressed="false"><svg><use href="#i-play"/></svg><span>Ligar o som</span></button></div>
     </section>
     <aside class="end-note container"><div><strong>Etec de Fernandópolis & amigos.</strong><p>De qualquer turma.</p></div><button class="button button-secondary" id="back-to-top">Voltar pro começo</button></aside>
   </main>
 
-  <footer class="site-footer container"><div><a class="wordmark" href="#inicio">zeballos<span class="wordmark-dot">.</span></a><p>Um site do Zeballos.</p></div><div class="footer-aside"><span>Galera da Etec de Fernandópolis</span><span>Site pessoal e não oficial. Sem vínculo com a Etec ou a Rockstar.</span></div></footer>
+  <footer class="site-footer container"><div><a class="wordmark" href="#inicio">zeballos<span class="wordmark-dot">.</span></a><p>Um site do Zeballos.</p></div><div class="footer-aside"><span>Galera da Etec de Fernandópolis</span><span>Site pessoal e não oficial. Sem vínculo com a Etec.</span></div></footer>
 
   <dialog class="lightbox" id="lightbox" aria-label="Visualizador de fotos"><div class="lightbox-shell"><div class="lightbox-top"><span id="lightbox-counter"></span><button class="icon-button lightbox-close" id="lightbox-close" aria-label="Fechar foto"><svg><use href="#i-close"/></svg></button></div><div class="lightbox-stage"><button class="lightbox-nav previous" id="previous-photo" aria-label="Foto anterior"><svg><use href="#i-chevron"/></svg></button><img id="lightbox-image" alt=""><button class="lightbox-nav next" id="next-photo" aria-label="Próxima foto"><svg><use href="#i-chevron"/></svg></button></div><div class="lightbox-bottom"><div><div class="lightbox-heading"><h3 id="lightbox-title"></h3><button type="button" class="lobster-secret" id="lobster-secret" aria-label="Lagosta" hidden>🦞</button></div><p id="lobster-status" role="status" aria-live="polite"></p><p id="lightbox-file"></p><a id="lightbox-source" class="lightbox-source" target="_blank" rel="noopener noreferrer" hidden>Ver fonte original</a></div><div class="lightbox-actions"><button class="icon-button" id="lightbox-favorite" aria-label="Salvar foto" aria-pressed="false"><svg><use href="#i-heart"/></svg></button><a class="icon-button" id="download-photo" download aria-label="Baixar foto"><svg><use href="#i-download"/></svg></a></div></div><p class="lightbox-help">Use as setas para trocar · Esc para fechar</p></div></dialog>
   <dialog class="study-dialog" id="study-dialog" aria-labelledby="study-title"><div class="study-top"><span>ANOTAÇÕES DE AULA</span><button class="button button-secondary" id="study-close">Voltar ao site <kbd>P</kbd></button></div><div class="study-content"><p class="eyebrow">DESENVOLVIMENTO WEB · ETEC</p><h2 id="study-title">Revisão de HTML e CSS</h2><p>HTML organiza o conteúdo de uma página. CSS define como esse conteúdo aparece.</p><h3>Estrutura básica</h3><pre><code>&lt;!doctype html&gt;
@@ -165,7 +140,6 @@
   &lt;head&gt;&lt;title&gt;Minha página&lt;/title&gt;&lt;/head&gt;
   &lt;body&gt;&lt;h1&gt;Olá, mundo!&lt;/h1&gt;&lt;/body&gt;
 &lt;/html&gt;</code></pre><h3>Para lembrar</h3><ul><li>Use títulos em uma ordem que faça sentido.</li><li>Descreva imagens com o atributo <code>alt</code>.</li><li>O visual precisa funcionar no celular também.</li></ul><p class="study-postscript">Viu? Era pesquisa mesmo.</p></div></dialog>
-  <dialog class="meme-dialog" id="meme-dialog" aria-labelledby="meme-modal-title"><div class="meme-dialog-top"><span id="meme-counter"></span><button class="icon-button" id="meme-close" aria-label="Fechar meme"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div><div class="meme-dialog-body"><div class="meme-modal-picture"><button class="meme-modal-nav" id="meme-previous" aria-label="Meme anterior"><svg aria-hidden="true"><use href="#i-chevron"/></svg></button><img id="meme-image" alt=""><button class="meme-modal-nav" id="meme-next" aria-label="Próximo meme"><svg aria-hidden="true"><use href="#i-chevron"/></svg></button></div><div class="meme-modal-copy"><p class="eyebrow">MATERIAL PARA O GRUPO</p><h3 id="meme-modal-title"></h3><p class="meme-caption" id="meme-caption"></p><div class="meme-dialog-actions"><button class="button button-primary" id="copy-caption">Copiar legenda</button><button class="button button-secondary" id="meme-save" aria-pressed="false">Guardar meme</button></div><div class="meme-source-block"><p id="meme-modal-credit"></p><a id="meme-source" target="_blank" rel="noopener noreferrer">Ver fonte original</a><a id="meme-download" download>Baixar imagem</a></div></div></div><p class="meme-dialog-help">Setas para trocar · Esc para fechar</p></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
   <dialog class="iceberg-dialog" id="iceberg-dialog" aria-labelledby="iceberg-title"><button type="button" class="iceberg-close" id="iceberg-close" aria-label="Fechar iceberg">×</button><span class="iceberg-symbol" aria-hidden="true">🧊</span><p class="eyebrow">VOCÊ ACHOU</p><h2 id="iceberg-title">Iceberg do 2 Infonet</h2><a class="button button-primary" href="https://canva.link/g5xjxrqyqzpmmjw" target="_blank" rel="noopener noreferrer">Abrir iceberg no Canva ↗</a></dialog>

@@ -100,5 +100,3 @@
   .quiz-result .arcade-actions { flex-direction: column; align-items: stretch; }
 }
 @media(prefers-reduced-motion:reduce) { .arcade-section *, .arcade-section *::before, .arcade-section *::after { transition: none; animation: none; } }
-.quiz-result-icon.has-meme{width:240px;height:210px;max-width:100%;border-radius:9px;overflow:hidden;background:var(--bg);border:1px solid var(--line);transform:rotate(-2deg)}
-.quiz-result-icon.has-meme img{width:100%;height:100%;object-fit:contain}
