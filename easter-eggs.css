@@ -32,3 +32,13 @@
 .location-secret { display: inline-grid; place-items: center; vertical-align: middle; width: 44px; height: 44px; margin: -14px -12px -14px -16px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: 16px; }
 .location-secret:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .rain-caption { position: absolute; z-index: 1; top: 18%; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 12px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); font: 700 clamp(24px, 5vw, 46px)/1.2 Display, Arial, sans-serif; text-align: center; box-shadow: 0 8px 32px #0003; }
+
+/* A chuva é iniciada por clique. Mesmo com animações reduzidas no PC,
+   mostramos menos peças em uma queda curta em vez de ocultar o efeito. */
+@media (prefers-reduced-motion: reduce) {
+  .lobster-confetti {
+    display: block;
+    animation: lobster-drop 2.2s linear both !important;
+    animation-delay: var(--rain-delay, 0s) !important;
+  }
+}
