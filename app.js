@@ -199,15 +199,17 @@
     rainActive = false;
     const layer = $('#confetti-layer');
     layer.replaceChildren();
+    layer.setAttribute('aria-hidden', 'true');
     document.body.append(layer);
     $('#lobster-status').textContent = '';
   }
-  function lobsterRain() {
+  function lobsterRain(symbol = '🦞', label = '') {
     if (rainActive) return;
     rainActive = true;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      if (lightbox.open) $('#lobster-status').textContent = '🦞 🦞 🦞';
-      else notify('🦞 🦞 🦞');
+      const message = label ? `${symbol} ${label}` : `${symbol} ${symbol} ${symbol}`;
+      if (lightbox.open) $('#lobster-status').textContent = message;
+      else notify(message);
       rainTimer = setTimeout(clearLobsters, 5000);
       return;
     }
@@ -215,10 +217,19 @@
     // O dialog usa a top layer: a chuva precisa estar dentro dele para aparecer.
     (document.querySelector('dialog[open]') || document.body).append(layer);
     layer.replaceChildren();
+    layer.setAttribute('aria-hidden', String(!label));
+    if (label) {
+      const caption = document.createElement('strong');
+      caption.className = 'rain-caption';
+      caption.setAttribute('role', 'status');
+      layer.append(caption);
+      caption.textContent = label;
+    }
     for (let i = 0; i < 36; i++) {
       const lobster = document.createElement('span');
       lobster.className = 'lobster-confetti';
-      lobster.textContent = '🦞';
+      lobster.textContent = symbol;
+      lobster.setAttribute('aria-hidden', 'true');
       lobster.style.left = `${Math.random() * 95}%`;
       lobster.style.animationDelay = `${i * 0.14}s`;
       lobster.style.animationDuration = `${3 + Math.random() * 1.2}s`;
@@ -227,6 +238,7 @@
     }
     rainTimer = setTimeout(clearLobsters, 9500);
   }
+  $('#location-secret').addEventListener('click', () => lobsterRain('🪲', 'Luzia Pro Max'));
   function trackHenri() {
     if (henriClicks === 0) henriReset = setTimeout(() => { henriClicks = 0; }, 4000);
     henriClicks += 1;
