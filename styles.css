@@ -902,6 +902,9 @@ button:focus:not(:focus-visible) {
   flex-direction: column;
   gap:22px
 }
+.side-quests .emergency-note {
+  flex: 1;
+}
 .video-note {
   position: relative;
   background: #e4f0b6;

@@ -49,7 +49,7 @@
     'O slide não abriu', 'O código rodou', 'O código parou', 'Bateu o sono',
     'Deu tela azul', 'Mudou o lugar', 'Cadê o arquivo?', 'Pediram silêncio',
     'A fila andou', 'Foi sem querer', 'Deu erro de novo', 'Chegou no sinal',
-    'O grupo acordou', 'Alguém fez meme', 'O áudio vazou', 'Sumiu o pen drive',
+    'O grupo acordou', 'Alguém trouxe lanche', 'O áudio vazou', 'Sumiu o pen drive',
     'Sem cabo HDMI', 'Riu sem motivo', 'Faltou o estojo', 'O intervalo voou'
   ];
   const bingoLines = [
@@ -198,41 +198,41 @@
 
   const quizQuestions = [
     { text: 'O trabalho é pra amanhã. Você abre a pasta e…', answers: [
-      ['doge', 'Manda um “vai dar bom” e começa.'],
-      ['patrick', 'Abre o arquivo errado antes de achar o certo.'],
-      ['stonks', 'Divide em etapas e faz uma lista.'],
-      ['fine', 'Faz um café. A noite promete.']
+      ['improviso', 'Manda um “vai dar bom” e começa.'],
+      ['curioso', 'Abre o arquivo errado antes de achar o certo.'],
+      ['planejador', 'Divide em etapas e faz uma lista.'],
+      ['tranquilo', 'Faz um café. A noite promete.']
     ] },
     { text: 'O intervalo começou. Qual é a primeira missão?', answers: [
-      ['patrick', 'Descobrir por que todo mundo já saiu.'],
-      ['stonks', 'Calcular o melhor lanche pelo preço.'],
-      ['fine', 'Sentar dois minutos. Só dois.'],
-      ['doge', 'Encontrar a galera e ver no que dá.']
+      ['curioso', 'Descobrir por que todo mundo já saiu.'],
+      ['planejador', 'Calcular o melhor lanche pelo preço.'],
+      ['tranquilo', 'Sentar dois minutos. Só dois.'],
+      ['improviso', 'Encontrar a galera e ver no que dá.']
     ] },
-    { text: 'Você acabou de mandar uma figurinha no grupo.', answers: [
-      ['stonks', 'Foi na hora certa. Investimento aprovado.'],
-      ['fine', 'Agora é torcer pra terem entendido.'],
-      ['doge', 'Já tá rindo antes de alguém responder.'],
-      ['patrick', 'Era outro grupo. Acontece.']
+    { text: 'O grupo vai decidir o trabalho. Você...', answers: [
+      ['planejador', 'Organiza as tarefas antes de começar.'],
+      ['tranquilo', 'Espera a galera decidir primeiro.'],
+      ['improviso', 'Manda a primeira ideia que apareceu.'],
+      ['curioso', 'Pergunta em qual grupo era mesmo.']
     ] },
     { text: 'O código rodou de primeira. Sua reação?', answers: [
-      ['fine', 'Não toca em nada. Só salva.'],
-      ['doge', 'Pequena comemoração no lugar.'],
-      ['patrick', 'Confere se abriu o projeto certo.'],
-      ['stonks', 'Print, backup e próximo objetivo.']
+      ['tranquilo', 'Não toca em nada. Só salva.'],
+      ['improviso', 'Pequena comemoração no lugar.'],
+      ['curioso', 'Confere se abriu o projeto certo.'],
+      ['planejador', 'Print, backup e próximo objetivo.']
     ] },
     { text: 'A foto da turma saiu tremida. E agora?', answers: [
-      ['doge', 'Essa mesmo. Ficou com a nossa cara.'],
-      ['fine', 'Pelo menos todo mundo apareceu.'],
-      ['stonks', 'Recorta, enquadra e chama de estilo.'],
-      ['patrick', 'Eu tava olhando pra câmera errada.']
+      ['improviso', 'Essa mesmo. Ficou com a nossa cara.'],
+      ['tranquilo', 'Pelo menos todo mundo apareceu.'],
+      ['planejador', 'Recorta, enquadra e chama de estilo.'],
+      ['curioso', 'Eu tava olhando pra câmera errada.']
     ] }
   ];
   const quizResults = {
-    doge: { icon: '🐕', title: 'Doge', description: 'Vai dar bom.' },
-    patrick: { icon: '⭐', title: 'Patrick', description: 'Entendeu tudo. Só que não.' },
-    stonks: { icon: '📈', title: 'Stonks', description: 'Já calculou o preço do lanche.' },
-    fine: { icon: '☕', title: 'This Is Fine', description: 'Ainda dá tempo.' }
+    improviso: { icon: '🎲', title: 'No improviso', description: 'Resolve na hora e segue o jogo.' },
+    curioso: { icon: '🔎', title: 'Curioso', description: 'Sempre tem mais uma pergunta.' },
+    planejador: { icon: '🗒️', title: 'Planejador', description: 'Já pensou nos próximos passos.' },
+    tranquilo: { icon: '☕', title: 'Tranquilo', description: 'Um passo de cada vez.' }
   };
   let quizIndex = 0;
   let quizChoices = Array(quizQuestions.length).fill(null);
@@ -247,7 +247,7 @@
       label.className = 'quiz-answer';
       const input = document.createElement('input');
       input.type = 'radio';
-      input.name = 'arcade-meme-answer';
+      input.name = 'arcade-quiz-answer';
       input.value = key;
       input.checked = quizChoices[quizIndex] === key;
       const copy = document.createElement('span');
@@ -263,27 +263,18 @@
     $('#quiz-answers').replaceChildren(fragment);
     $('#quiz-back').disabled = quizIndex === 0;
     $('#quiz-next').disabled = quizChoices[quizIndex] === null;
-    $('#quiz-next').textContent = quizIndex === quizQuestions.length - 1 ? 'Ver meu meme' : 'Próxima pergunta';
+    $('#quiz-next').textContent = quizIndex === quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima pergunta';
     if (focus) $('#quiz-question').focus({ preventScroll: true });
   }
   function showQuizResult() {
     if (quizChoices.some(choice => !choice)) return;
-    const scores = { doge: 0, patrick: 0, stonks: 0, fine: 0 };
+    const scores = { improviso: 0, curioso: 0, planejador: 0, tranquilo: 0 };
     quizChoices.forEach(key => { scores[key] += 1; });
     const highest = Math.max(...Object.values(scores));
-    // Num empate, a resposta mais recente entre os memes empatados decide.
+    // Num empate, a resposta mais recente decide.
     const resultKey = [...quizChoices].reverse().find(key => scores[key] === highest);
     const result = quizResults[resultKey];
     $('#quiz-result-icon').textContent = result.icon;
-    const memeId = resultKey === 'fine' ? 'this-is-fine' : resultKey;
-    const meme = (window.MEMES_DATA || []).find(item => item.id === memeId);
-    $('#quiz-result-icon').classList.toggle('has-meme', Boolean(meme));
-    if (meme) {
-      const image = document.createElement('img');
-      image.src = meme.src;
-      image.alt = '';
-      $('#quiz-result-icon').replaceChildren(image);
-    }
     $('#quiz-result-title').textContent = result.title;
     $('#quiz-result-description').textContent = result.description;
     $('#quiz-play').hidden = true;
