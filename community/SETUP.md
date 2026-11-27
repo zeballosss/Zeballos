@@ -7,13 +7,13 @@ O site publica os envios **imediatamente**. Você remove fotos e bane contas pel
 1. Escolha o projeto Supabase que vai usar. Em **Storage**, crie `community-photos`: **privado**, limite **2097152 bytes (2 MiB)** e MIME permitido **somente `image/webp`**. Não ative versionamento. Use o painel ou a Storage API para configurar o bucket, sem editar `storage.buckets` por SQL.
 2. Rode o conteúdo completo de `schema.sql` no **SQL Editor**, como `postgres`. Ele confere o bucket antes de aplicar e pode ser executado novamente. Se faltar o helper oficial `storage.allow_only_operation(text)`, é preciso alinhar a versão do Storage; não remova essa proteção.
 3. Em **Authentication → URL Configuration**, coloque o endereço HTTPS definitivo da Vercel em **Site URL** e nos redirecionamentos permitidos. Em produção, use o endereço exato do seu site.
-4. Escolha o login: **email/senha com confirmação ativa e SMTP próprio** para enviar confirmações/recuperações aos colegas; ou configure **Google OAuth** no Supabase e no Google Cloud, com o callback mostrado pelo painel. Não desative a confirmação para contornar falhas de email. O SMTP padrão serve para testes e restringe destinatários.
-5. Preencha `community/config.js` seguindo `config.example.js`: URL do projeto e **publishable key** pública (ou chave legada `anon`). Nunca coloque `service_role`, secret key, senha de banco, SMTP ou segredo do Google no site/GitHub. Deixe `allowGoogle` e `allowPasswordReset` falsos até concluir e testar as respectivas configurações.
+4. Ative o login por e-mail e configure **SMTP próprio** no Supabase para enviar códigos a todos os colegas. Em **Authentication → Email Templates → Magic Link**, substitua o link pelo código `{{ .Token }}` (seis dígitos). Deixe a confirmação de e-mail ativa. O site envia o código com `signInWithOtp` e confirma com `verifyOtp`; sem o código, não há sessão para publicar. O SMTP padrão restringe destinatários e serve apenas para testes. Opcionalmente, configure Google OAuth.
+5. Preencha `community/config.js` seguindo `config.example.js`: URL do projeto e **publishable key** pública (ou chave legada `anon`). Nunca coloque `service_role`, secret key, senha de banco, SMTP ou segredo do Google no site/GitHub. Deixe `allowGoogle` falso até concluir e testar Google OAuth. A tela usa código por e-mail e não pede senha.
 6. Mantenha `community_private` e `storage` fora dos schemas expostos pela Data API. Confira os limites de uso do projeto; a quota daqui é por conta, não substitui os limites de Auth/Storage.
 
 ## Liberar seu administrador
 
-Entre no site e confirme seu email. Em **Authentication → Users**, copie e confira o **UID da sua própria conta**. Só depois, no SQL Editor, substitua o texto abaixo pelo UID confirmado:
+Entre no site com o código enviado ao seu e-mail. Em **Authentication → Users**, copie e confira o **UID da sua própria conta**. Só depois, no SQL Editor, substitua o texto abaixo pelo UID confirmado:
 
 ```sql
 insert into public.community_admins(user_id)
@@ -71,3 +71,5 @@ Use uma conta comum e a sua conta admin: confirmar login, enviar, abrir em janel
 Na pasta `community/tests`, execute `npm install` e `npm test`. São 32 verificações de banco PostgreSQL em PGlite e 18 de interface em JSDOM. Auth e Storage são simulados; nenhum teste usa credenciais ou altera um projeto real. Os testes cobrem publicação direta, acesso, limites, bloqueio com sessão antiga, remoção, falhas e texto enviado por usuários.
 
 A integração real com Supabase e a conferência visual no navegador ainda precisam ser feitas após a configuração acima.
+
+A confirmação prova que a pessoa tem acesso àquela caixa de entrada naquele momento. Não prova nome verdadeiro nem impede todos os serviços de e-mail temporário; se isso for obrigatório, é preciso uma regra adicional no servidor para domínios aceitos e moderação de contas. O apelido de quem enviou aparece na foto, sem mostrar o e-mail publicamente.

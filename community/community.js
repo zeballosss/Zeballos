@@ -36,7 +36,7 @@
     } catch { return false; }
   }
   if (!validConfig(config)) {
-    message(notice, 'O envio de fotos ainda está sendo preparado. Por enquanto, aproveita a galeria da turma.');
+    message(notice, 'O envio de fotos ainda está sendo preparado. Por enquanto, aproveita a galeria da Etec.');
     return;
   }
 
@@ -76,11 +76,10 @@
     <div class="cm-feed-footer"><button type="button" class="cm-button" id="cm-more" hidden>Ver mais fotos</button></div>
     <dialog class="cm-dialog" id="cm-auth-dialog" aria-labelledby="cm-auth-title">
       <div class="cm-dialog-top"><div><h3 id="cm-auth-title">Bora entrar?</h3><p class="cm-note">O e-mail fica só na sua conta, fora do mural.</p></div><button class="cm-dialog-close" type="button" data-cm-close aria-label="Fechar login">×</button></div>
-      <div class="cm-dialog-tabs" id="cm-auth-tabs"><button class="cm-button" type="button" data-auth-mode="signin" aria-pressed="true">Entrar</button><button class="cm-button" type="button" data-auth-mode="signup" aria-pressed="false">Criar conta</button></div>
       <form id="cm-auth-form">
-        <label class="cm-field" id="cm-email-field" for="cm-email">E-mail<input id="cm-email" type="email" name="email" autocomplete="email" maxlength="254" required></label>
-        <label class="cm-field" id="cm-password-field" for="cm-password">Senha<input id="cm-password" type="password" name="password" autocomplete="current-password" minlength="8" maxlength="128" required></label>
-        <div class="cm-actions"><button class="cm-button cm-button-filled" id="cm-auth-submit" type="submit">Entrar</button><button class="cm-link-button" id="cm-reset" type="button" hidden>Esqueci a senha</button></div>
+        <label class="cm-field" for="cm-email">Seu e-mail<input id="cm-email" type="email" name="email" autocomplete="email" maxlength="254" required></label>
+        <label class="cm-field" id="cm-code-field" for="cm-code" hidden>Código recebido<input id="cm-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required disabled></label>
+        <div class="cm-actions"><button class="cm-button cm-button-filled" id="cm-auth-submit" type="submit">Enviar código</button><button class="cm-link-button" id="cm-resend" type="button" hidden>Reenviar código</button></div>
         <p class="cm-status" id="cm-auth-status" role="status" aria-live="polite"></p>
       </form>
       <button class="cm-button cm-google" id="cm-google" type="button" hidden>Entrar com Google</button>
@@ -94,7 +93,7 @@
       <form id="cm-confirm-form"><p id="cm-confirm-copy"></p><label class="cm-field" for="cm-confirm-reason" id="cm-confirm-reason-field">Motivo<input id="cm-confirm-reason" type="text" maxlength="180"></label><div class="cm-actions"><button class="cm-button" type="button" id="cm-confirm-cancel">Cancelar</button><button class="cm-button cm-button-danger" type="submit" id="cm-confirm-action">Confirmar</button></div></form>
     </dialog>`;
   const $ = id => document.getElementById(id);
-  const ui = Object.fromEntries(['account-title','account-note','login','logout','admin-toggle','upload','file','nickname','caption','caption-count','preview','preview-empty','consent','publish','clear','upload-status','feed-title','refresh','feed-status','feed','more','auth-dialog','auth-title','auth-tabs','auth-form','email-field','email','password-field','password','auth-submit','auth-status','reset','google','viewer','viewer-status','viewer-image','viewer-caption','viewer-author','confirm-dialog','confirm-title','confirm-copy','confirm-reason-field','confirm-reason','confirm-form','confirm-cancel','confirm-action'].map(id => [id, $('cm-' + id)]));
+  const ui = Object.fromEntries(['account-title','account-note','login','logout','admin-toggle','upload','file','nickname','caption','caption-count','preview','preview-empty','consent','publish','clear','upload-status','feed-title','refresh','feed-status','feed','more','auth-dialog','auth-title','auth-form','email','auth-submit','auth-status','code-field','code','resend','google','viewer','viewer-status','viewer-image','viewer-caption','viewer-author','confirm-dialog','confirm-title','confirm-copy','confirm-reason-field','confirm-reason','confirm-form','confirm-cancel','confirm-action'].map(id => [id, $('cm-' + id)]));
   const redirectUrl = () => location.origin + location.pathname + '#comunidade';
   const isAdmin = () => state.profile?.is_admin === true;
   const mayUpload = () => Boolean(state.user && state.profile && !state.profile.is_banned);
@@ -131,24 +130,19 @@
     return fallback;
   }
   function showDialog(dialog) { if (!dialog.open) dialog.showModal(); }
+  let pendingEmail = '';
+  let resendReadyAt = 0;
   function setAuthMode(mode) {
     state.authMode = mode;
-    const reset = mode === 'reset';
-    const recovery = mode === 'recovery';
-    ui['auth-title'].textContent = recovery ? 'Escolha uma nova senha.' : reset ? 'Vamos recuperar sua conta.' : mode === 'signup' ? 'Mais alguém pro álbum.' : 'Bora entrar?';
-    ui['auth-tabs'].hidden = reset || recovery;
-    ui['email-field'].hidden = recovery;
-    ui.email.required = !recovery;
-    ui['password-field'].hidden = reset;
-    ui.password.required = !reset;
-    ui.password.minLength = mode === 'signin' ? 1 : 8;
-    ui.password.autocomplete = mode === 'signin' ? 'current-password' : 'new-password';
-    ui['auth-submit'].textContent = recovery ? 'Salvar nova senha' : reset ? 'Enviar recuperação' : mode === 'signup' ? 'Criar conta' : 'Entrar';
-    ui.reset.hidden = config.allowPasswordReset !== true || mode !== 'signin';
-    ui.google.hidden = config.allowGoogle !== true || reset || recovery;
-    ui['auth-tabs'].querySelectorAll('[data-auth-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.authMode === mode)));
-    message(ui['auth-status'], '');
-    ui.password.value = '';
+    ui['auth-title'].textContent = mode === 'code' ? 'Confira seu e-mail.' : 'Entrar com e-mail';
+    ui['code-field'].hidden = mode !== 'code';
+    ui.code.disabled = mode !== 'code';
+    ui.email.readOnly = mode === 'code';
+    ui['auth-submit'].textContent = mode === 'code' ? 'Confirmar código' : 'Enviar código';
+    ui.resend.hidden = mode !== 'code';
+    ui.google.hidden = config.allowGoogle !== true || mode === 'code';
+    message(ui['auth-status'], mode === 'code' ? 'Digite o código de 6 números enviado ao seu e-mail.' : '');
+    if (mode !== 'code') { ui.code.value = ''; pendingEmail = ''; }
   }
   function renderIdentity() {
     ui.login.hidden = Boolean(state.user);
@@ -182,35 +176,41 @@
     if (epoch !== state.identityEpoch) return;
     if (!isAdmin() && state.mode === 'admin') state.mode = 'public';
     renderIdentity();
-    if (state.recovering && state.user) { state.recovering = false; setAuthMode('recovery'); showDialog(ui['auth-dialog']); }
     await loadFeed(true);
   }
 
-  ui.login.addEventListener('click', () => { setAuthMode('signin'); showDialog(ui['auth-dialog']); });
-  ui['auth-tabs'].addEventListener('click', event => { const button = event.target.closest('[data-auth-mode]'); if (button && !state.authBusy) setAuthMode(button.dataset.authMode); });
-  ui.reset.addEventListener('click', () => setAuthMode('reset'));
+  ui.login.addEventListener('click', () => { setAuthMode('email'); showDialog(ui['auth-dialog']); });
   app.querySelectorAll('[data-cm-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
-  ui['auth-dialog'].addEventListener('close', () => { ui.password.value = ''; });
+  ui['auth-dialog'].addEventListener('close', () => { ui.code.value = ''; setAuthMode('email'); });
+  async function sendCode(email) {
+    const { error } = await client.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+    if (error) throw error;
+    pendingEmail = email;
+    resendReadyAt = Date.now() + 60000;
+    setAuthMode('code');
+    message(ui['auth-status'], 'Código enviado. Confira a caixa de entrada e o spam.');
+  }
+  ui.resend.addEventListener('click', async () => {
+    if (state.authBusy || !pendingEmail) return;
+    if (Date.now() < resendReadyAt) { message(ui['auth-status'], 'Espere um minuto antes de pedir outro código.'); return; }
+    state.authBusy = true; ui.resend.disabled = true;
+    try { await sendCode(pendingEmail); }
+    catch (error) { message(ui['auth-status'], friendlyError(error, 'Não consegui reenviar o código agora.'), 'error'); }
+    finally { state.authBusy = false; ui.resend.disabled = false; }
+  });
   ui['auth-form'].addEventListener('submit', async event => {
     event.preventDefault();
     if (state.authBusy || !ui['auth-form'].reportValidity()) return;
     state.authBusy = true; ui['auth-submit'].disabled = true; ui.google.disabled = true;
-    const mode = state.authMode;
-    message(ui['auth-status'], mode === 'reset' ? 'Solicitando recuperação…' : 'Só um instante…');
     try {
-      const email = ui.email.value.trim();
-      const password = ui.password.value;
-      let result;
-      if (mode === 'signup') result = await client.auth.signUp({ email, password, options: { emailRedirectTo: redirectUrl() } });
-      else if (mode === 'reset' && config.allowPasswordReset === true) result = await client.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl() });
-      else if (mode === 'recovery') result = await client.auth.updateUser({ password });
-      else result = await client.auth.signInWithPassword({ email, password });
-      if (result.error) throw result.error;
-      ui.password.value = '';
-      if (mode === 'reset') message(ui['auth-status'], 'Se houver uma conta para esse e-mail, confira a mensagem de recuperação.');
-      else if (mode === 'signup' && !result.data.session) message(ui['auth-status'], 'Confira seu e-mail para continuar o cadastro. Se já tiver conta, use Entrar.');
-      else { ui['auth-dialog'].close(); message(notice, mode === 'recovery' ? 'Nova senha salva.' : 'Conta conectada. Agora escolhe uma foto.'); }
-    } catch (error) { message(ui['auth-status'], friendlyError(error), 'error'); }
+      if (state.authMode === 'email') await sendCode(ui.email.value.trim());
+      else {
+        const { error } = await client.auth.verifyOtp({ email: pendingEmail, token: ui.code.value.trim(), type: 'email' });
+        if (error) throw error;
+        ui['auth-dialog'].close();
+        message(notice, 'E-mail confirmado. Agora você pode enviar uma foto.');
+      }
+    } catch (error) { message(ui['auth-status'], friendlyError(error, 'Código inválido ou expirado. Confira e tente novamente.'), 'error'); }
     finally { state.authBusy = false; ui['auth-submit'].disabled = false; ui.google.disabled = false; }
   });
   ui.google.addEventListener('click', async () => {
@@ -387,7 +387,7 @@
     button.addEventListener('click', () => openPhoto(row));
     const copy = document.createElement('div'); copy.className = 'cm-card-copy';
     const meta = document.createElement('div'); meta.className = 'cm-card-meta';
-    const name = document.createElement('strong'); name.textContent = row.display_name || 'Alguém do intervalo';
+    const name = document.createElement('strong'); name.textContent = `Enviada por ${row.display_name || 'alguém do intervalo'}`;
     const time = document.createElement('time'); const stamp = row.published_at || row.created_at; if (stamp) time.dateTime = stamp; time.textContent = dateLabel(stamp);
     meta.append(name, time); copy.append(meta);
     if (row.caption) { const caption = document.createElement('p'); caption.textContent = row.caption; copy.append(caption); }
@@ -507,7 +507,6 @@
   // o lock de autenticação enquanto entrega o evento. A atualização roda depois.
   client.auth.onAuthStateChange((event, session) => {
     state.user = session?.user || null;
-    if (event === 'PASSWORD_RECOVERY') state.recovering = true;
     setTimeout(() => { refreshIdentity(); }, 0);
   });
   message(notice, '');
