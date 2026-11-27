@@ -26,6 +26,8 @@
   let toastTimer;
   let henriClicks = 0;
   let henriReset;
+  let rainTimer;
+  let rainActive = false;
   let brandClicks = 0;
   let brandReset;
   let previousTheme = 'light';
@@ -57,7 +59,7 @@
     $$('[data-leonida]').forEach(button => button.setAttribute('aria-pressed', String(theme === 'leonida')));
     $$('[data-leonida-label]').forEach(label => { label.textContent = theme === 'leonida' ? 'Voltar pro interior' : 'Partiu Leonida'; });
     $('meta[name="theme-color"]').content = { light: '#f7f7f4', dark: '#171916', leonida: '#161528' }[theme];
-    if (announce) notify(theme === 'leonida' ? 'Bem-vindo a Leonida. A Etec ficou pra trás. 🌴' : theme === 'dark' ? 'Apagaram a luz da sala.' : 'Acenderam a luz da sala.');
+    if (announce) notify({ leonida: 'Modo Leonida.', dark: 'Modo escuro.', light: 'Modo claro.' }[theme]);
   }
   $$('[data-theme-set]').forEach(button => button.addEventListener('click', () => applyTheme(button.dataset.themeSet, true)));
   $$('[data-leonida]').forEach(button => button.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'leonida' ? previousTheme : 'leonida', true)));
@@ -81,7 +83,7 @@
     open.setAttribute('aria-label', `Ampliar ${titleFor(photo)}`);
     const image = document.createElement('img');
     image.src = photo.thumb;
-    image.alt = photo.name ? `Foto de ${photo.name}` : `Registro da turma, arquivo ${photo.id.replace('foto-', '')}`;
+    image.alt = photo.name ? `Foto de ${photo.name}` : `Foto da galera, arquivo ${photo.id.replace('foto-', '')}`;
     image.loading = 'lazy';
     image.decoding = 'async';
     if (photo.width) { image.width = photo.width; image.height = photo.height; }
@@ -113,7 +115,7 @@
   }
   function toggleFavorite(id) {
     if (favorites.has(id)) { favorites.delete(id); notify('Foto tirada das salvas.'); }
-    else { favorites.add(id); notify('Foto salva neste navegador. Boa escolha.'); }
+    else { favorites.add(id); notify('Foto salva neste navegador.'); }
     storage.write('zeballos-favorites', [...favorites]);
     $$('[data-favorite]').forEach(button => button.setAttribute('aria-pressed', String(favorites.has(button.dataset.favorite))));
     $('#favorite-count').textContent = favorites.size;
@@ -149,8 +151,12 @@
   }
   function renderModalPhoto() {
     const photo = sequence[currentIndex];
+    clearLobsters();
+    henriClicks = 0;
+    clearTimeout(henriReset);
+    $('#lobster-secret').hidden = photo.id !== people[0]?.id;
     $('#lightbox-image').src = photo.src;
-    $('#lightbox-image').alt = photo.alt || (photo.name ? `Foto de ${photo.name}` : `Registro da turma, arquivo ${photo.id.replace('foto-', '')}`);
+    $('#lightbox-image').alt = photo.alt || (photo.name ? `Foto de ${photo.name}` : `Foto da galera, arquivo ${photo.id.replace('foto-', '')}`);
     $('#lightbox-title').textContent = titleFor(photo);
     $('#lightbox-file').textContent = photo.credit || photo.originalName;
     $('#lightbox-source').hidden = !photo.sourceUrl;
@@ -179,15 +185,37 @@
   }, { passive: true });
   $$('[data-open-photo]').forEach(button => button.addEventListener('click', () => openPhoto(button.dataset.openPhoto)));
   $$('[data-random]').forEach(button => button.addEventListener('click', () => {
+    if (Math.random() < 0.01) {
+      $('#iceberg-dialog').showModal();
+      return;
+    }
     if (!allPhotos.length) return;
     openPhoto(allPhotos[Math.floor(Math.random() * allPhotos.length)].id);
   }));
+  $('#iceberg-close').addEventListener('click', () => $('#iceberg-dialog').close());
 
-  function lobsterRain() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { notify('🦞 Henri Lagosta entrou no servidor.'); return; }
+  function clearLobsters() {
+    clearTimeout(rainTimer);
+    rainActive = false;
     const layer = $('#confetti-layer');
     layer.replaceChildren();
-    for (let i = 0; i < 26; i++) {
+    document.body.append(layer);
+    $('#lobster-status').textContent = '';
+  }
+  function lobsterRain() {
+    if (rainActive) return;
+    rainActive = true;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (lightbox.open) $('#lobster-status').textContent = '🦞 🦞 🦞';
+      else notify('🦞 🦞 🦞');
+      rainTimer = setTimeout(clearLobsters, 5000);
+      return;
+    }
+    const layer = $('#confetti-layer');
+    // O dialog usa a top layer: a chuva precisa estar dentro dele para aparecer.
+    (document.querySelector('dialog[open]') || document.body).append(layer);
+    layer.replaceChildren();
+    for (let i = 0; i < 36; i++) {
       const lobster = document.createElement('span');
       lobster.className = 'lobster-confetti';
       lobster.textContent = '🦞';
@@ -196,16 +224,17 @@
       lobster.style.fontSize = `${23 + Math.random() * 30}px`;
       layer.append(lobster);
     }
-    setTimeout(() => layer.replaceChildren(), 5000);
-    notify('O Henri tomou conta do site. 🦞');
+    rainTimer = setTimeout(clearLobsters, 5000);
   }
   function trackHenri() {
-    clearTimeout(henriReset);
+    if (henriClicks === 0) henriReset = setTimeout(() => { henriClicks = 0; }, 4000);
     henriClicks += 1;
-    henriReset = setTimeout(() => { henriClicks = 0; }, 4500);
-    if (henriClicks >= 3) { henriClicks = 0; lobsterRain(); }
+    if (henriClicks >= 5) { henriClicks = 0; clearTimeout(henriReset); lobsterRain(); }
   }
-  $('#henri-hero').addEventListener('click', () => { trackHenri(); openPhoto(people[0]?.id); });
+  $('#lobster-secret').addEventListener('click', trackHenri);
+  lightbox.addEventListener('close', () => { clearLobsters(); henriClicks = 0; clearTimeout(henriReset); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearLobsters(); });
+  $('#henri-hero').addEventListener('click', () => openPhoto(people[0]?.id));
   const crewFragment = document.createDocumentFragment();
   people.forEach((person, index) => {
     const button = document.createElement('button');
@@ -222,11 +251,8 @@
     if (index === 0) { const tag = document.createElement('span'); tag.className = 'lobster-tag'; tag.textContent = '🦞'; tag.setAttribute('aria-hidden', 'true'); frame.append(tag); }
     const name = document.createElement('h3');
     name.textContent = person.name;
-    const subtitle = document.createElement('span');
-    subtitle.className = 'crew-subtitle';
-    subtitle.textContent = index === 0 ? 'sim, o Lagosta.' : index === 3 ? 'a dupla da foto.' : 'parte da história.';
-    button.append(frame, name, subtitle);
-    button.addEventListener('click', () => { if (index === 0) trackHenri(); openPhoto(person.id, people); });
+    button.append(frame, name);
+    button.addEventListener('click', () => openPhoto(person.id, people));
     crewFragment.append(button);
   });
   $('#crew-grid').append(crewFragment);
@@ -269,7 +295,6 @@
   $('#rent-button').addEventListener('click', () => {
     $('#rent-status').textContent = rentMessages[rentAttempts % rentMessages.length];
     rentAttempts += 1;
-    if (rentAttempts === 4) notify('Cobrança nível 4. A resenha continua.');
   });
 
   function toggleStudy() {
@@ -298,6 +323,7 @@
   document.addEventListener('keydown', event => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable;
     if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+    if ([...document.querySelectorAll('dialog[open]')].some(dialog => dialog !== lightbox && dialog !== study)) return;
     if (event.key.toLowerCase() === 'p') { event.preventDefault(); toggleStudy(); return; }
     if (study.open) return;
     if (lightbox.open) {

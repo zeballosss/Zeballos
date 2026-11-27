@@ -1,0 +1,13 @@
+.lightbox-heading { display: flex; align-items: center; gap: 8px; }
+.lobster-secret { background: transparent; color: inherit; border: 0; border-radius: 50%; min-width: 44px; min-height: 44px; font-size: 24px; padding: 4px; }
+.lobster-secret:hover { background: #ffffff15; }
+.lobster-secret:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+#lobster-status:empty { display: none; }
+.iceberg-dialog { position: fixed; inset: 0; margin: auto; width: min(460px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 40px 28px 30px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--ink); text-align: center; overflow: auto; }
+.iceberg-dialog::backdrop { background: #060b17c9; }
+.iceberg-symbol { display: block; margin-bottom: 14px; font-size: 58px; line-height: 1.2; }
+.iceberg-dialog h2 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; margin: 12px 0 26px; overflow-wrap: anywhere; }
+.iceberg-dialog .button { white-space: normal; }
+.iceberg-close { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: transparent; color: inherit; font-size: 28px; }
+.iceberg-dialog :is(button,a):focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .lobster-confetti { display: none; } }
