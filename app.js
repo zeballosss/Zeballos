@@ -204,15 +204,11 @@
     $('#lobster-status').textContent = '';
   }
   function lobsterRain(symbol = '🦞', label = '') {
-    if (rainActive) return;
+    // Cada descoberta inicia a chuva de novo, inclusive se outra ainda estiver caindo.
+    clearLobsters();
     rainActive = true;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const message = label ? `${symbol} ${label}` : `${symbol} ${symbol} ${symbol}`;
-      if (lightbox.open) $('#lobster-status').textContent = message;
-      else notify(message);
-      rainTimer = setTimeout(clearLobsters, 5000);
-      return;
-    }
+    // O clique é uma escolha explícita; em modo de movimento reduzido, usamos menos peças e uma queda mais curta.
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const layer = $('#confetti-layer');
     // O dialog usa a top layer: a chuva precisa estar dentro dele para aparecer.
     (document.querySelector('dialog[open]') || document.body).append(layer);
@@ -225,18 +221,18 @@
       layer.append(caption);
       caption.textContent = label;
     }
-    for (let i = 0; i < 36; i++) {
+    for (let i = 0; i < (reducedMotion ? 18 : 36); i++) {
       const lobster = document.createElement('span');
       lobster.className = 'lobster-confetti';
       lobster.textContent = symbol;
       lobster.setAttribute('aria-hidden', 'true');
       lobster.style.left = `${Math.random() * 95}%`;
-      lobster.style.animationDelay = `${i * 0.14}s`;
-      lobster.style.animationDuration = `${3 + Math.random() * 1.2}s`;
+      lobster.style.animationDelay = `${i * (reducedMotion ? 0.08 : 0.14)}s`;
+      lobster.style.animationDuration = `${(reducedMotion ? 2.2 : 3) + Math.random() * (reducedMotion ? 0.5 : 1.2)}s`;
       lobster.style.fontSize = `${23 + Math.random() * 30}px`;
       layer.append(lobster);
     }
-    rainTimer = setTimeout(clearLobsters, 9500);
+    rainTimer = setTimeout(clearLobsters, reducedMotion ? 6000 : 9500);
   }
   $('#location-secret').addEventListener('click', () => lobsterRain('🪲', 'Luzia Pro Max'));
   function trackHenri() {
