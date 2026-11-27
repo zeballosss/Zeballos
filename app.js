@@ -223,7 +223,9 @@
       lobster.textContent = symbol;
       lobster.setAttribute('aria-hidden', 'true');
       lobster.style.left = `${Math.random() * 95}%`;
-      lobster.style.animationDelay = `${i * (reducedMotion ? 0.08 : 0.14)}s`;
+      const delay = `${i * (reducedMotion ? 0.08 : 0.14)}s`;
+      lobster.style.animationDelay = delay;
+      lobster.style.setProperty('--rain-delay', delay);
       lobster.style.animationDuration = `${(reducedMotion ? 2.2 : 3) + Math.random() * (reducedMotion ? 0.5 : 1.2)}s`;
       lobster.style.fontSize = `${23 + Math.random() * 30}px`;
       layer.append(lobster);
