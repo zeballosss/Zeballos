@@ -72,7 +72,7 @@
     });
     const status = $('#bingo-status');
     status.classList.toggle('is-success', lines.length > 0);
-    status.textContent = lines.length > 0 ? `BINGO! ${lines.length === 1 ? 'Uma sequência fechada' : `${lines.length} sequências fechadas`}. A sala entregou tudo.` : `${message ? `${message} ` : ''}${bingoMarks.size} de 16 marcados. Falta a sala colaborar.`;
+    status.textContent = lines.length > 0 ? `BINGO! ${lines.length === 1 ? 'Uma sequência fechada' : `${lines.length} sequências fechadas`}.` : `${message ? `${message} ` : ''}${bingoMarks.size} de 16 marcados.`;
     saveBingo();
   }
   function drawBingo(message = '') {
@@ -229,10 +229,10 @@
     ] }
   ];
   const quizResults = {
-    doge: { icon: '🐕', title: 'Doge', description: 'Muito entusiasmo. Pouco contexto. Seu meme chegou com um “vai dar bom” e puxou uma cadeira pra todo mundo.' },
-    patrick: { icon: '⭐', title: 'Patrick', description: 'O pensamento fez um caminho alternativo e chegou com uma boa história. Talvez a pergunta fosse outra, mas a resposta ficou ótima.' },
-    stonks: { icon: '📈', title: 'Stonks', description: 'Até o lanche virou uma operação estratégica. Seu meme trouxe uma planilha imaginária e saiu achando que fez um grande negócio.' },
-    fine: { icon: '☕', title: 'This Is Fine', description: 'O prazo aperta, a aba trava, e o café segue firme. Seu meme respirou fundo e decidiu resolver uma coisa de cada vez.' }
+    doge: { icon: '🐕', title: 'Doge', description: 'Vai dar bom.' },
+    patrick: { icon: '⭐', title: 'Patrick', description: 'Entendeu tudo. Só que não.' },
+    stonks: { icon: '📈', title: 'Stonks', description: 'Já calculou o preço do lanche.' },
+    fine: { icon: '☕', title: 'This Is Fine', description: 'Ainda dá tempo.' }
   };
   let quizIndex = 0;
   let quizChoices = Array(quizQuestions.length).fill(null);

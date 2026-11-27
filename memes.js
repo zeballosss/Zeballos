@@ -6,7 +6,6 @@
   let filter = 'todos';
   let current = 0;
   let modalSequence = [];
-  let sillyTimer;
   let copyTimer;
   let changedWhileOpen = false;
   const dialog = $('#meme-dialog');
@@ -19,7 +18,7 @@
   function save(id) {
     saved.has(id) ? saved.delete(id) : saved.add(id);
     try { localStorage.setItem(favoriteKey, JSON.stringify([...saved])); } catch { /* A seleção dura nesta visita. */ }
-    status(saved.has(id) ? 'Guardado no seu navegador. O grupo agradece.' : 'Tirado dos seus memes salvos.');
+    status(saved.has(id) ? 'Salvo neste navegador.' : 'Removido dos salvos.');
     if (dialog.open) changedWhileOpen = true;
     render();
     if (dialog.open) updateSaveButton();
@@ -108,7 +107,7 @@
     filter = button.dataset.memeFilter;
     document.querySelectorAll('[data-meme-filter]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
     render();
-    status(filter === 'salvos' ? 'Essa coleção fica só neste navegador.' : 'Escolhe a imagem que explica a situação.');
+    status(filter === 'salvos' ? 'Essa coleção fica só neste navegador.' : '');
   }));
   $('#random-meme').addEventListener('click', () => {
     const list = selection().length ? selection() : memes;
@@ -158,19 +157,6 @@
     $('#rainbow-feature').addEventListener('click', () => open(rainbow.id));
   } else $('#rainbow-feature').hidden = true;
 
-  function setSilly(active) {
-    clearTimeout(sillyTimer);
-    document.body.classList.toggle('silly-mode', active);
-    $('#silly-toggle').setAttribute('aria-pressed', String(active));
-    $('#silly-toggle').textContent = active ? 'Voltar a ter juízo' : 'Ativar modo bobão';
-    $('#silly-banner').hidden = !active;
-    if (active) {
-      status('O juízo saiu. Volta em 15 segundos. 🌈');
-      sillyTimer = setTimeout(() => setSilly(false), 15000);
-    }
-  }
-  $('#silly-toggle').addEventListener('click', () => setSilly(!document.body.classList.contains('silly-mode')));
-  $('#silly-close').addEventListener('click', () => setSilly(false));
   $('#back-to-top').addEventListener('click', () => {
     $('#inicio').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     document.querySelector('.wordmark')?.focus({ preventScroll: true });
