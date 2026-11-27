@@ -10,7 +10,6 @@
 .iceberg-dialog .button { white-space: normal; }
 .iceberg-close { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: transparent; color: inherit; font-size: 28px; }
 .iceberg-dialog :is(button,a):focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .lobster-confetti { display: none; } }
 
 /* Queda inteira: nasce fora do topo e só termina depois da borda inferior. */
 #confetti-layer { --rain-height: 100vh; }
