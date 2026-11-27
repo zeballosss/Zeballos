@@ -17,7 +17,7 @@
   const MAX_PIXELS = 25000000;
   const state = { client: null, user: null, profile: null, mode: 'public', rows: new Map(), cursor: null, more: false,
     feedBusy: false, feedEpoch: 0, identityEpoch: 0, selectionEpoch: 0, prepared: null, previewUrl: null,
-    preparing: false, uploading: false, authBusy: false, authMode: 'signin', recovering: false, nicknameUser: null };
+    preparing: false, uploading: false, authBusy: false, nicknameUser: null };
 
   function message(node, text, tone = '') {
     node.textContent = text;
@@ -62,7 +62,7 @@
         <label class="cm-field" for="cm-file">Escolha uma foto<input id="cm-file" name="photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="cm-file-help"></label>
         <p class="cm-file-help" id="cm-file-help">JPG, PNG ou WebP · até 10 MB. A foto será reduzida antes do envio.</p>
         <label class="cm-field" for="cm-nickname">Seu nome no mural<input id="cm-nickname" name="nickname" type="text" minlength="2" maxlength="40" autocomplete="nickname" required></label>
-        <label class="cm-field" for="cm-caption">Uma legenda, se quiser<textarea id="cm-caption" name="caption" maxlength="140" rows="3" placeholder="o contexto a gente perdeu"></textarea></label>
+        <label class="cm-field" for="cm-caption">Descrição (opcional)<textarea id="cm-caption" name="caption" maxlength="140" rows="3" placeholder="o contexto a gente perdeu"></textarea></label>
         <p class="cm-upload-count" id="cm-caption-count">0 / 140</p>
       </div><div class="cm-preview"><img id="cm-preview" alt="Prévia da foto que você escolheu; ainda não publicada" hidden><span class="cm-preview-empty" id="cm-preview-empty">Sua foto aparece aqui antes de publicar.</span></div></div>
       <div class="cm-rules"><p>Compartilhe só fotos que você pode publicar, com autorização de quem aparece. Sem dados pessoais, intimidade ou ataques.</p><p>Spam, fotos repetidas ou envios feitos só para lotar a galeria podem resultar em bloqueio da conta.</p><p class="cm-note">Limite de 3 envios por hora e 10 por dia.</p></div>
@@ -75,25 +75,20 @@
     <div class="cm-feed-grid" id="cm-feed" aria-busy="true"></div>
     <div class="cm-feed-footer"><button type="button" class="cm-button" id="cm-more" hidden>Ver mais fotos</button></div>
     <dialog class="cm-dialog" id="cm-auth-dialog" aria-labelledby="cm-auth-title">
-      <div class="cm-dialog-top"><div><h3 id="cm-auth-title">Bora entrar?</h3><p class="cm-note">O e-mail fica só na sua conta, fora do mural.</p></div><button class="cm-dialog-close" type="button" data-cm-close aria-label="Fechar login">×</button></div>
-      <form id="cm-auth-form">
-        <label class="cm-field" for="cm-email">Seu e-mail<input id="cm-email" type="email" name="email" autocomplete="email" maxlength="254" required></label>
-        <label class="cm-field" id="cm-code-field" for="cm-code" hidden>Código recebido<input id="cm-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required disabled></label>
-        <div class="cm-actions"><button class="cm-button cm-button-filled" id="cm-auth-submit" type="submit">Enviar código</button><button class="cm-link-button" id="cm-resend" type="button" hidden>Reenviar código</button></div>
-        <p class="cm-status" id="cm-auth-status" role="status" aria-live="polite"></p>
-      </form>
-      <button class="cm-button cm-google" id="cm-google" type="button" hidden>Entrar com Google</button>
+      <div class="cm-dialog-top"><div><h3 id="cm-auth-title">Entre com Google.</h3><p class="cm-note">Seu e-mail não aparece no mural. Só o nome que você escolher.</p></div><button class="cm-dialog-close" type="button" data-cm-close aria-label="Fechar login">×</button></div>
+      <button class="cm-button cm-google" id="cm-google" type="button">Continuar com Google</button>
+      <p class="cm-status" id="cm-auth-status" role="status" aria-live="polite"></p>
     </dialog>
     <dialog class="cm-dialog cm-viewer" id="cm-viewer" aria-labelledby="cm-viewer-title">
       <div class="cm-dialog-top"><h3 id="cm-viewer-title">Uma foto do mural.</h3><button class="cm-dialog-close" type="button" data-cm-close aria-label="Fechar foto">×</button></div>
-      <p class="cm-status" id="cm-viewer-status" role="status"></p><img id="cm-viewer-image" alt="" hidden><p class="cm-viewer-caption" id="cm-viewer-caption"></p><p class="cm-viewer-author" id="cm-viewer-author"></p>
+      <p class="cm-status" id="cm-viewer-status" role="status"></p><img id="cm-viewer-image" alt="" hidden><p class="cm-viewer-caption" id="cm-viewer-caption"></p><p class="cm-viewer-author" id="cm-viewer-author"></p><button class="cm-button" type="button" id="cm-report" hidden>Denunciar foto</button><p class="cm-note" id="cm-report-note" hidden>10 denúncias de contas diferentes ocultam a foto até revisão.</p>
     </dialog>
     <dialog class="cm-dialog" id="cm-confirm-dialog" aria-labelledby="cm-confirm-title">
       <div class="cm-dialog-top"><h3 id="cm-confirm-title">Confirmar ação</h3><button class="cm-dialog-close" type="button" data-cm-close aria-label="Cancelar ação">×</button></div>
       <form id="cm-confirm-form"><p id="cm-confirm-copy"></p><label class="cm-field" for="cm-confirm-reason" id="cm-confirm-reason-field">Motivo<input id="cm-confirm-reason" type="text" maxlength="180"></label><div class="cm-actions"><button class="cm-button" type="button" id="cm-confirm-cancel">Cancelar</button><button class="cm-button cm-button-danger" type="submit" id="cm-confirm-action">Confirmar</button></div></form>
     </dialog>`;
   const $ = id => document.getElementById(id);
-  const ui = Object.fromEntries(['account-title','account-note','login','logout','admin-toggle','upload','file','nickname','caption','caption-count','preview','preview-empty','consent','publish','clear','upload-status','feed-title','refresh','feed-status','feed','more','auth-dialog','auth-title','auth-form','email','auth-submit','auth-status','code-field','code','resend','google','viewer','viewer-status','viewer-image','viewer-caption','viewer-author','confirm-dialog','confirm-title','confirm-copy','confirm-reason-field','confirm-reason','confirm-form','confirm-cancel','confirm-action'].map(id => [id, $('cm-' + id)]));
+  const ui = Object.fromEntries(['account-title','account-note','login','logout','admin-toggle','upload','file','nickname','caption','caption-count','preview','preview-empty','consent','publish','clear','upload-status','feed-title','refresh','feed-status','feed','more','auth-dialog','auth-title','auth-status','google','viewer','viewer-status','viewer-image','viewer-caption','viewer-author','report','report-note','confirm-dialog','confirm-title','confirm-copy','confirm-reason-field','confirm-reason','confirm-form','confirm-cancel','confirm-action'].map(id => [id, $('cm-' + id)]));
   const redirectUrl = () => location.origin + location.pathname + '#comunidade';
   const isAdmin = () => state.profile?.is_admin === true;
   const mayUpload = () => Boolean(state.user && state.profile && !state.profile.is_banned);
@@ -119,6 +114,9 @@
       community_invalid_upload_size: 'O arquivo ficou maior que o limite. Escolha uma versão menor.',
       community_admin_required: 'Só o administrador pode fazer essa alteração.',
       community_cannot_ban_self: 'Você não pode bloquear a própria conta por aqui.'
+      ,community_cannot_report_self: 'Você não pode denunciar sua própria foto.'
+      ,community_already_reported: 'Você já denunciou esta foto.'
+      ,community_report_limit: 'Limite de 5 denúncias em 24 horas. Tente mais tarde.'
     };
     if (communityErrors[detail]) return communityErrors[detail];
     if (code === 'invalid_credentials') return 'E-mail ou senha não conferem.';
@@ -130,27 +128,13 @@
     return fallback;
   }
   function showDialog(dialog) { if (!dialog.open) dialog.showModal(); }
-  let pendingEmail = '';
-  let resendReadyAt = 0;
-  function setAuthMode(mode) {
-    state.authMode = mode;
-    ui['auth-title'].textContent = mode === 'code' ? 'Confira seu e-mail.' : 'Entrar com e-mail';
-    ui['code-field'].hidden = mode !== 'code';
-    ui.code.disabled = mode !== 'code';
-    ui.email.readOnly = mode === 'code';
-    ui['auth-submit'].textContent = mode === 'code' ? 'Confirmar código' : 'Enviar código';
-    ui.resend.hidden = mode !== 'code';
-    ui.google.hidden = config.allowGoogle !== true || mode === 'code';
-    message(ui['auth-status'], mode === 'code' ? 'Digite o código de 6 números enviado ao seu e-mail.' : '');
-    if (mode !== 'code') { ui.code.value = ''; pendingEmail = ''; }
-  }
   function renderIdentity() {
-    ui.login.hidden = Boolean(state.user);
+    ui.login.hidden = Boolean(state.user) || config.allowGoogle !== true;
     ui.logout.hidden = !state.user;
     ui['admin-toggle'].hidden = !isAdmin();
     ui.upload.hidden = !mayUpload();
     ui['account-title'].textContent = !state.user ? 'Sua câmera também conta essa história.' : !state.profile ? 'Conferindo sua conta…' : state.profile.is_banned ? 'Sua conta não pode enviar fotos.' : `Chegou, ${state.profile.display_name || 'alguém do intervalo'}.`;
-    ui['account-note'].textContent = !state.user ? 'Entre para publicar. Ver as fotos é livre.' : !state.profile ? 'A publicação depende da verificação da sua conta.' : state.profile.is_banned ? 'O envio está bloqueado. Você ainda pode sair da conta.' : isAdmin() ? 'Você também pode administrar os envios do mural.' : 'Escolha uma foto. A publicação aparece direto no mural.';
+    ui['account-note'].textContent = !state.user ? config.allowGoogle === true ? 'Entre com Google para publicar. Ver as fotos é livre.' : 'O envio está sendo preparado. Ver as fotos é livre.' : !state.profile ? 'A publicação depende da verificação da sua conta.' : state.profile.is_banned ? 'O envio está bloqueado. Você ainda pode sair da conta.' : isAdmin() ? 'Você também pode administrar os envios do mural.' : 'Escolha uma foto. A publicação aparece direto no mural.';
     if (state.user && state.nicknameUser !== state.user.id && state.profile) {
       ui.nickname.value = state.profile.display_name || '';
       state.nicknameUser = state.user.id;
@@ -179,40 +163,8 @@
     await loadFeed(true);
   }
 
-  ui.login.addEventListener('click', () => { setAuthMode('email'); showDialog(ui['auth-dialog']); });
+  ui.login.addEventListener('click', () => { message(ui['auth-status'], ''); showDialog(ui['auth-dialog']); });
   app.querySelectorAll('[data-cm-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
-  ui['auth-dialog'].addEventListener('close', () => { ui.code.value = ''; setAuthMode('email'); });
-  async function sendCode(email) {
-    const { error } = await client.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-    if (error) throw error;
-    pendingEmail = email;
-    resendReadyAt = Date.now() + 60000;
-    setAuthMode('code');
-    message(ui['auth-status'], 'Código enviado. Confira a caixa de entrada e o spam.');
-  }
-  ui.resend.addEventListener('click', async () => {
-    if (state.authBusy || !pendingEmail) return;
-    if (Date.now() < resendReadyAt) { message(ui['auth-status'], 'Espere um minuto antes de pedir outro código.'); return; }
-    state.authBusy = true; ui.resend.disabled = true;
-    try { await sendCode(pendingEmail); }
-    catch (error) { message(ui['auth-status'], friendlyError(error, 'Não consegui reenviar o código agora.'), 'error'); }
-    finally { state.authBusy = false; ui.resend.disabled = false; }
-  });
-  ui['auth-form'].addEventListener('submit', async event => {
-    event.preventDefault();
-    if (state.authBusy || !ui['auth-form'].reportValidity()) return;
-    state.authBusy = true; ui['auth-submit'].disabled = true; ui.google.disabled = true;
-    try {
-      if (state.authMode === 'email') await sendCode(ui.email.value.trim());
-      else {
-        const { error } = await client.auth.verifyOtp({ email: pendingEmail, token: ui.code.value.trim(), type: 'email' });
-        if (error) throw error;
-        ui['auth-dialog'].close();
-        message(notice, 'E-mail confirmado. Agora você pode enviar uma foto.');
-      }
-    } catch (error) { message(ui['auth-status'], friendlyError(error, 'Código inválido ou expirado. Confira e tente novamente.'), 'error'); }
-    finally { state.authBusy = false; ui['auth-submit'].disabled = false; ui.google.disabled = false; }
-  });
   ui.google.addEventListener('click', async () => {
     if (config.allowGoogle !== true || state.authBusy) return;
     state.authBusy = true; ui.google.disabled = true;
@@ -394,8 +346,11 @@
     card.append(button, copy);
     if (state.mode === 'admin' && isAdmin()) {
       const status = document.createElement('span'); status.className = 'cm-admin-status';
-      status.textContent = `${({ pending: 'Envio incompleto', published: 'Publicada', removed: 'Removida' })[row.status] || 'Envio'}${row.is_banned ? ' · conta bloqueada' : ''}`; copy.append(status);
+      status.textContent = `${({ pending: 'Envio incompleto', published: 'Publicada', hidden: 'Oculta por denúncias', removed: 'Removida' })[row.status] || 'Envio'}${row.is_banned ? ' · conta bloqueada' : ''}`; copy.append(status);
       const actions = document.createElement('div'); actions.className = 'cm-card-admin';
+      if (row.status === 'hidden') {
+        const restore = document.createElement('button'); restore.type = 'button'; restore.className = 'cm-button'; restore.textContent = 'Restaurar foto'; restore.addEventListener('click', () => restorePhoto(row)); actions.append(restore);
+      }
       const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'cm-button cm-button-danger'; remove.textContent = row.status === 'removed' ? 'Limpar arquivo' : 'Remover foto'; remove.addEventListener('click', () => removePhoto(row)); actions.append(remove);
       if (row.owner_id && row.owner_id !== state.user?.id) {
         const ban = document.createElement('button'); ban.type = 'button'; ban.className = 'cm-button'; ban.textContent = row.is_banned ? 'Desbloquear conta' : 'Bloquear conta'; ban.addEventListener('click', () => changeBan(row)); actions.append(ban);
@@ -446,8 +401,13 @@
   ui.refresh.addEventListener('click', async () => { if (state.user) await refreshIdentity(); else await loadFeed(true); });
   ui['admin-toggle'].addEventListener('click', () => { if (!isAdmin()) return; state.mode = state.mode === 'admin' ? 'public' : 'admin'; loadFeed(true); });
   let viewerEpoch = 0;
+  let viewedPhoto = null;
   async function openPhoto(row) {
     const epoch = ++viewerEpoch;
+    viewedPhoto = row;
+    ui.report.hidden = !state.user || row.status !== 'published';
+    ui['report-note'].hidden = ui.report.hidden;
+    ui.report.disabled = false;
     ui['viewer-image'].hidden = true; ui['viewer-image'].removeAttribute('src');
     ui['viewer-caption'].textContent = row.caption || '';
     ui['viewer-author'].textContent = `Enviada por ${row.display_name || 'alguém do intervalo'}.`;
@@ -459,7 +419,23 @@
       ui['viewer-image'].src = url; ui['viewer-image'].hidden = false; message(ui['viewer-status'], '');
     } catch { if (epoch === viewerEpoch) message(ui['viewer-status'], 'Essa foto não está disponível agora. Atualize o mural.', 'error'); }
   }
-  ui.viewer.addEventListener('close', () => { viewerEpoch++; ui['viewer-image'].removeAttribute('src'); });
+  ui.viewer.addEventListener('close', () => { viewerEpoch++; viewedPhoto = null; ui['viewer-image'].removeAttribute('src'); });
+  ui.report.addEventListener('click', async () => {
+    const row = viewedPhoto;
+    if (!row || !state.user || ui.report.disabled) return;
+    const accepted = await askConfirmation({ title: 'Denunciar esta foto?', text: 'Use apenas se ela violar as regras do mural. Uma denúncia por conta; 10 contas diferentes ocultam a foto para revisão.', label: 'Denunciar' });
+    if (accepted === null || viewedPhoto?.id !== row.id) return;
+    ui.report.disabled = true;
+    try {
+      const result = one(await rpc('report_community_photo', { p_photo_id: row.id }));
+      message(notice, result?.hidden ? 'A foto foi ocultada para revisão.' : 'Denúncia registrada. Obrigado por avisar.');
+      ui.viewer.close();
+      if (result?.hidden) await loadFeed(true);
+    } catch (error) {
+      message(ui['viewer-status'], friendlyError(error, 'Não foi possível registrar a denúncia.'), 'error');
+      ui.report.disabled = false;
+    }
+  });
   function askConfirmation({ title, text, label, reason = false, reasonRequired = false }) {
     ui['confirm-title'].textContent = title; ui['confirm-copy'].textContent = text;
     ui['confirm-action'].textContent = label; ui['confirm-reason-field'].hidden = !reason;
@@ -474,6 +450,17 @@
   }
   ui['confirm-cancel'].addEventListener('click', () => ui['confirm-dialog'].close());
   let adminBusy = false;
+  async function restorePhoto(row) {
+    if (!isAdmin() || adminBusy || row.status !== 'hidden') return;
+    adminBusy = true;
+    try {
+      const accepted = await askConfirmation({ title: 'Restaurar esta foto?', text: 'A foto volta ao mural. Confira se as denúncias não indicam uma violação das regras.', label: 'Restaurar foto' });
+      if (accepted === null) return;
+      await rpc('admin_restore_community_photo', { p_photo_id: row.id });
+      message(notice, 'Foto restaurada no mural.'); await loadFeed(true);
+    } catch (error) { message(notice, friendlyError(error, 'Não foi possível restaurar a foto.'), 'error'); }
+    finally { adminBusy = false; }
+  }
   async function removePhoto(row) {
     if (!isAdmin() || adminBusy) return;
     adminBusy = true;

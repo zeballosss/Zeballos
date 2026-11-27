@@ -51,6 +51,7 @@ create table if not exists public.community_photos (
   caption text not null default '',
   display_name text not null,
   status text not null default 'pending',
+  report_baseline integer not null default 0,
   created_at timestamptz not null default pg_catalog.clock_timestamp(),
   reservation_expires_at timestamptz not null,
   published_at timestamptz,
@@ -60,12 +61,12 @@ create table if not exists public.community_photos (
   constraint community_photo_path_owner check (object_path = owner_id::text || '/' || id::text || '.webp'),
   constraint community_photo_caption_length check (pg_catalog.char_length(caption) <= 140),
   constraint community_photo_name_length check (pg_catalog.char_length(display_name) between 2 and 40),
-  constraint community_photo_status check (status in ('pending', 'published', 'removed')),
+  constraint community_photo_status check (status in ('pending', 'published', 'hidden', 'removed')),
   constraint community_photo_expiry check (reservation_expires_at = created_at + interval '15 minutes'),
   constraint community_photo_publish_time check (published_at is null or (published_at >= created_at and published_at <= reservation_expires_at)),
   constraint community_photo_remove_time check (removed_at is null or removed_at >= created_at),
   constraint community_photo_public_metadata check (
-    status <> 'published' or (
+    status not in ('published', 'hidden') or (
       published_at is not null and size_bytes is not null and size_bytes between 1 and 2097152
       and mime_type = 'image/webp' and removed_at is null
     )
@@ -74,6 +75,26 @@ create table if not exists public.community_photos (
   constraint community_photo_removed_metadata check (status <> 'removed' or removed_at is not null)
 );
 
+-- Projetos já configurados com a versão anterior preservam suas fotos.
+alter table public.community_photos add column if not exists report_baseline integer not null default 0;
+alter table public.community_photos drop constraint if exists community_photo_status;
+alter table public.community_photos add constraint community_photo_status check (status in ('pending', 'published', 'hidden', 'removed'));
+alter table public.community_photos drop constraint if exists community_photo_public_metadata;
+alter table public.community_photos add constraint community_photo_public_metadata check (
+  status not in ('published', 'hidden') or (
+    published_at is not null and size_bytes is not null and size_bytes between 1 and 2097152
+    and mime_type = 'image/webp' and removed_at is null
+  )
+);
+
+create table if not exists public.community_photo_reports (
+  photo_id uuid not null references public.community_photos(id) on delete cascade,
+  reporter_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default pg_catalog.clock_timestamp(),
+  primary key (photo_id, reporter_id)
+);
+create index if not exists community_reports_reporter_time_idx on public.community_photo_reports(reporter_id, created_at desc);
+
 create index if not exists community_photos_owner_created_idx on public.community_photos(owner_id, created_at desc);
 create index if not exists community_photos_public_cursor_idx on public.community_photos(published_at desc, id desc) where status = 'published';
 create index if not exists community_photos_admin_cursor_idx on public.community_photos(created_at desc, id desc);
@@ -81,7 +102,8 @@ create index if not exists community_photos_admin_cursor_idx on public.community
 alter table public.community_profiles enable row level security;
 alter table public.community_admins enable row level security;
 alter table public.community_photos enable row level security;
-revoke all privileges on public.community_profiles, public.community_admins, public.community_photos from public, anon, authenticated;
+alter table public.community_photo_reports enable row level security;
+revoke all privileges on public.community_profiles, public.community_admins, public.community_photos, public.community_photo_reports from public, anon, authenticated;
 
 -- Helpers não ficam no schema exposto pela Data API. Nenhum usa user_metadata para papéis.
 create or replace function community_private.is_active_user()
@@ -326,6 +348,54 @@ begin
 end
 $fn$;
 
+-- Denúncias não apagam arquivos. Dez contas distintas ocultam a foto até revisão.
+create or replace function public.report_community_photo(p_photo_id uuid)
+returns table(report_count integer, hidden boolean)
+language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare v_uid uuid := auth.uid(); v_photo public.community_photos%rowtype; v_count integer;
+begin
+  if not community_private.is_active_user() then
+    raise exception using errcode = '42501', message = 'COMMUNITY_AUTH_REQUIRED';
+  end if;
+  if p_photo_id is null then raise exception using errcode = '22023', message = 'COMMUNITY_PHOTO_NOT_FOUND'; end if;
+  select * into v_photo from public.community_photos f where f.id = p_photo_id for update;
+  if not found or v_photo.status <> 'published' then
+    raise exception using errcode = '22023', message = 'COMMUNITY_PHOTO_NOT_FOUND';
+  end if;
+  if v_photo.owner_id = v_uid then
+    raise exception using errcode = '42501', message = 'COMMUNITY_CANNOT_REPORT_SELF';
+  end if;
+  if exists (select 1 from public.community_photo_reports r where r.photo_id = p_photo_id and r.reporter_id = v_uid) then
+    raise exception using errcode = '23505', message = 'COMMUNITY_ALREADY_REPORTED';
+  end if;
+  if (select count(*) from public.community_photo_reports r
+      where r.reporter_id = v_uid and r.created_at > pg_catalog.clock_timestamp() - interval '24 hours') >= 5 then
+    raise exception using errcode = '42901', message = 'COMMUNITY_REPORT_LIMIT';
+  end if;
+  insert into public.community_photo_reports(photo_id, reporter_id) values (p_photo_id, v_uid);
+  select count(*)::integer into v_count from public.community_photo_reports r where r.photo_id = p_photo_id;
+  if v_count - v_photo.report_baseline >= 10 then
+    update public.community_photos f set status = 'hidden' where f.id = p_photo_id;
+  end if;
+  return query select v_count - v_photo.report_baseline, v_count - v_photo.report_baseline >= 10;
+end
+$fn$;
+
+create or replace function public.admin_restore_community_photo(p_photo_id uuid)
+returns void language plpgsql volatile security definer set search_path = ''
+as $fn$
+begin
+  if not community_private.is_admin() then
+    raise exception using errcode = '42501', message = 'COMMUNITY_ADMIN_REQUIRED';
+  end if;
+  update public.community_photos f set status = 'published',
+    report_baseline = (select count(*)::integer from public.community_photo_reports r where r.photo_id = p_photo_id)
+    where f.id = p_photo_id and f.status = 'hidden';
+  if not found then raise exception using errcode = '22023', message = 'COMMUNITY_PHOTO_NOT_FOUND'; end if;
+end
+$fn$;
+
 create or replace function public.admin_set_community_ban(p_user_id uuid, p_banned boolean, p_reason text default '')
 returns void language plpgsql volatile security definer set search_path = ''
 as $fn$
@@ -353,12 +423,15 @@ revoke all on function public.cancel_community_photo(uuid) from public, anon, au
 revoke all on function public.list_community_photos(integer, timestamptz, uuid) from public, anon, authenticated;
 revoke all on function public.admin_list_community_photos(integer, timestamptz, uuid) from public, anon, authenticated;
 revoke all on function public.admin_remove_community_photo(uuid) from public, anon, authenticated;
+revoke all on function public.report_community_photo(uuid) from public, anon, authenticated;
+revoke all on function public.admin_restore_community_photo(uuid) from public, anon, authenticated;
 revoke all on function public.admin_set_community_ban(uuid, boolean, text) from public, anon, authenticated;
 grant execute on function public.list_community_photos(integer, timestamptz, uuid) to anon, authenticated;
 grant execute on function public.community_session_info(), public.reserve_community_photo(text, text),
   public.publish_community_photo(uuid), public.cancel_community_photo(uuid),
   public.admin_list_community_photos(integer, timestamptz, uuid), public.admin_remove_community_photo(uuid),
-  public.admin_set_community_ban(uuid, boolean, text) to authenticated;
+  public.admin_set_community_ban(uuid, boolean, text), public.report_community_photo(uuid),
+  public.admin_restore_community_photo(uuid) to authenticated;
 
 revoke all on all functions in schema community_private from public, anon, authenticated;
 grant execute on function community_private.photo_is_public(text), community_private.can_read_object(text),
