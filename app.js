@@ -24,8 +24,6 @@
   let sequence = [];
   let currentIndex = 0;
   let toastTimer;
-  let henriClicks = 0;
-  let henriReset;
   let rainTimer;
   let rainActive = false;
   let brandClicks = 0;
@@ -152,8 +150,6 @@
   function renderModalPhoto() {
     const photo = sequence[currentIndex];
     clearLobsters();
-    henriClicks = 0;
-    clearTimeout(henriReset);
     $('#lobster-secret').hidden = photo.id !== people[0]?.id;
     $('#lightbox-image').src = photo.src;
     $('#lightbox-image').alt = photo.alt || (photo.name ? `Foto de ${photo.name}` : `Foto da galera, arquivo ${photo.id.replace('foto-', '')}`);
@@ -234,14 +230,11 @@
     }
     rainTimer = setTimeout(clearLobsters, reducedMotion ? 6000 : 9500);
   }
-  $('#location-secret').addEventListener('click', () => lobsterRain('🪲', 'Luzia Pro Max'));
-  function trackHenri() {
-    if (henriClicks === 0) henriReset = setTimeout(() => { henriClicks = 0; }, 4000);
-    henriClicks += 1;
-    if (henriClicks >= 5) { henriClicks = 0; clearTimeout(henriReset); lobsterRain(); }
-  }
-  $('#lobster-secret').addEventListener('click', trackHenri);
-  lightbox.addEventListener('close', () => { clearLobsters(); henriClicks = 0; clearTimeout(henriReset); });
+  // A localização inteira aceita clique; o pin continua acessível pelo teclado.
+  $('#location-secret').parentElement.addEventListener('click', () => lobsterRain('🪲', 'Luzia Pro Max'));
+  // O ícone da foto do Henri é o segredo; um clique já dispara a chuva.
+  $('#lobster-secret').addEventListener('click', () => lobsterRain());
+  lightbox.addEventListener('close', clearLobsters);
   document.addEventListener('visibilitychange', () => { if (document.hidden) clearLobsters(); });
   $('#henri-hero').addEventListener('click', () => openPhoto(people[0]?.id));
   const crewFragment = document.createDocumentFragment();
