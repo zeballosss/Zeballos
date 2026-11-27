@@ -11,3 +11,21 @@
 .iceberg-close { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: transparent; color: inherit; font-size: 28px; }
 .iceberg-dialog :is(button,a):focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .lobster-confetti { display: none; } }
+
+/* Queda inteira: nasce fora do topo e só termina depois da borda inferior. */
+#confetti-layer { --rain-height: 100vh; }
+@supports (height: 100dvh) { #confetti-layer { --rain-height: 100dvh; } }
+.lobster-confetti {
+  top: -80px;
+  line-height: 1;
+  opacity: 1;
+  animation-name: lobster-drop;
+  animation-duration: 3.6s;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  will-change: transform;
+}
+@keyframes lobster-drop {
+  from { transform: translate3d(0, 0, 0); opacity: 1; }
+  to { transform: translate3d(0, calc(var(--rain-height) + 160px), 0); opacity: 1; }
+}

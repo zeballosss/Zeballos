@@ -220,11 +220,12 @@
       lobster.className = 'lobster-confetti';
       lobster.textContent = '🦞';
       lobster.style.left = `${Math.random() * 95}%`;
-      lobster.style.animationDelay = `${Math.random() * 1.2}s`;
+      lobster.style.animationDelay = `${i * 0.14}s`;
+      lobster.style.animationDuration = `${3 + Math.random() * 1.2}s`;
       lobster.style.fontSize = `${23 + Math.random() * 30}px`;
       layer.append(lobster);
     }
-    rainTimer = setTimeout(clearLobsters, 5000);
+    rainTimer = setTimeout(clearLobsters, 9500);
   }
   function trackHenri() {
     if (henriClicks === 0) henriReset = setTimeout(() => { henriClicks = 0; }, 4000);
